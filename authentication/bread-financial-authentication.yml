@@ -1,0 +1,44 @@
+generated: '2026-07-18'
+method: searched
+source: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+docs:
+- https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+- https://docs.breadpayments.com/bread-classic/reference/getting-started-with-your-api
+description: >-
+  Authentication model for the Bread Pay developer surface, captured from the
+  published API-access documentation (no OpenAPI securitySchemes were available
+  to derive from). The next-generation BreadPay Platform API uses OAuth 2.0; the
+  legacy sandbox/servicing API uses HTTP Basic plus a client token header.
+summary:
+  types: [oauth2, http, apiKey]
+  oauth2_flows: [clientCredentials]
+  api_key_in: [header]
+schemes:
+- name: BreadPay OAuth 2.0 (client credentials)
+  type: oauth2
+  flow: clientCredentials
+  token_format: JWT
+  detail: >-
+    BreadPay Platform APIs use the OAuth 2.0 Client Credentials Flow for
+    server-to-server (2-legged) interactions. Client credentials are sent using
+    HTTP Basic Authentication (Base64 of client_id:client_secret) to the
+    authorization server, which returns a JWT access token. Credentials are
+    issued from the Bread Merchant Portal / by the Bread partnership team.
+  source: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+- name: Sandbox Basic Auth + client token
+  type: http
+  scheme: basic
+  detail: >-
+    The partner sandbox / enterprise servicing API requires HTTP Basic Auth
+    (Base64 of client_id:client_secret) in the Authorization header PLUS a
+    separate client_token header (alphanumeric, up to 50 chars) designated by
+    Bread Financial. Requests must also originate from an allow-listed IP range.
+  source: https://platform-docs.breadpayments.com/bread-onboarding/docs/sandbox-access
+- name: Merchant integration key
+  type: apiKey
+  in: header
+  detail: >-
+    Browser SDK and Bread Classic checkout flows are initialized with a merchant
+    integrationKey (public) that identifies the merchant program; server-side
+    Classic calls additionally use an API key + shared secret.
+  source: https://docs.breadpayments.com/bread-classic/reference/getting-started-with-your-api
