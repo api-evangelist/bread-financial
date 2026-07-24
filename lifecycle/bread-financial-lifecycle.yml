@@ -1,0 +1,23 @@
+generated: '2026-07-18'
+method: searched
+source: https://platform-docs.breadpayments.com/bread-developers/docs
+description: >-
+  Lifecycle posture for the Bread Pay developer surface, captured from the
+  published docs. Bread runs two generations (Bread Classic and the current
+  Bread 2.0 platform) and versions its APIs/webhooks v1.0 and v2.0. No public
+  status page, SLA page, or formal deprecation policy page was found, so those
+  pointers are not emitted.
+versioning:
+  scheme: major version (v1.0 / v2.0) plus platform generation (Classic vs 2.0)
+  current: v2.0
+  known_versions: [v1.0, v2.0]
+  docs: https://platform-docs.breadpayments.com/bread-developers/docs
+generations:
+- {name: Bread Classic, docs: https://docs.breadpayments.com/bread-classic/reference}
+- {name: BreadPay Platform (Bread 2.0), docs: https://platform-docs.breadpayments.com/bread-developers/docs}
+deprecation:
+  policy_url: null
+  notes: Merchants on e-commerce plugins are guided to upgrade to the Bread 2.0 platform; no formal Sunset/Deprecation-header policy page found.
+sla:
+  url: null
+status_page: null

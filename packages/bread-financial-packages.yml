@@ -1,0 +1,72 @@
+generated: '2026-07-18'
+method: searched
+source: https://github.com/bppub
+description: >-
+  First-party Bread Financial Bread Pay client libraries. The mobile SDKs are
+  published on the bppub GitHub organization; the browser SDK is loaded from
+  Bread CDNs and exposes the global BreadPayments object. E-commerce platform
+  plugins (Magento 2, Salesforce Commerce Cloud, Miva, Volusion) are catalogued
+  separately below as integrations, not client SDKs.
+packages:
+- language: swift
+  registry: github
+  name: breadfinancial-brand-partners-ios
+  url: https://github.com/bppub/breadfinancial-brand-partners-ios
+  install: Add the Swift package / framework per the iOS mobile SDK guide
+  official: true
+  notes: >-
+    Official Bread Financial brand-partner mobile SDK for iOS. Provides batch
+    prescreen, unified prequalification, placement rendering, application
+    callbacks, and customer status events for native iOS apps.
+- language: swift
+  registry: github
+  name: breadfinancial-brand-partners-ios-swift
+  url: https://github.com/bppub/breadfinancial-brand-partners-ios-swift
+  install: Add the Swift package per the iOS mobile SDK guide
+  official: true
+  notes: Swift distribution of the Bread Financial brand-partner iOS SDK.
+- language: kotlin
+  registry: github
+  name: breadfinancial-brand-partners-android
+  url: https://github.com/bppub/breadfinancial-brand-partners-android
+  install: Add the Android (Kotlin) SDK per the Android mobile SDK guide
+  official: true
+  notes: >-
+    Official Bread Financial brand-partner mobile SDK for Android (Kotlin).
+    Provides batch prescreen, unified prequalification, placement rendering,
+    application callbacks, and customer application status events.
+- language: javascript
+  registry: cdn
+  name: Bread Pay JavaScript SDK (BreadPayments)
+  url: https://platform-docs.breadpayments.com/bread-onboarding/docs/installation-of-sdk
+  install: Load the Bread SDK script from the Bread CDN and initialize BreadPayments with a merchant integration key
+  official: true
+  notes: >-
+    Browser-side SDK exposing the global BreadPayments object for rendering the
+    Bread modal, embedded placements, real-time prequalification (RTPS), and
+    cart/checkout flows on merchant sites. Loaded from Bread preview and
+    production CDNs; not published to npm.
+integrations:
+- platform: magento-2
+  registry: github
+  name: magento-v2-bread
+  url: https://github.com/bppub/magento-v2-bread
+  official: true
+- platform: salesforce-commerce-cloud
+  registry: github
+  name: sfcc_bread_release
+  url: https://github.com/bppub/sfcc_bread_release
+  official: true
+- platform: miva
+  registry: github
+  name: miva_bread_release
+  url: https://github.com/bppub/miva_bread_release
+  official: true
+- platform: volusion
+  registry: github
+  name: volusion_bread_release
+  url: https://github.com/bppub/volusion_bread_release
+  official: true
+registries_probed:
+- {registry: npm, result: no first-party Bread Pay package found}
+- {registry: github, result: bppub org — mobile SDKs + e-commerce plugins}

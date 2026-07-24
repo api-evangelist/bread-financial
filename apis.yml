@@ -1,8 +1,34 @@
 aid: bread-financial
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread-financial.png
 name: Bread Financial
-description: 'Bread Financial is a company surfaced as a portfolio company of bessemer-venture-partners
-  and added to the API Evangelist network as a stub for enrichment. Sector: fintech. This profile is a
-  lead awaiting the enrichment pipeline.'
+description: >-
+  Bread Financial (formerly Alliance Data Systems) is a US consumer financial
+  services company providing branded and co-brand credit cards, private-label
+  and general-purpose lending, and point-of-sale buy-now-pay-later financing
+  under the Bread Pay brand. Its developer surface, Bread Pay, exposes a REST
+  API platform for merchants to embed installment and revolving financing into
+  online and in-store checkout: the next-generation BreadPay Platform API
+  (api.platform.breadpayments.com) manages buyers, merchant accounts, payment
+  options, pricing, and the transaction lifecycle (authorize, capture, cancel,
+  refund), secured with OAuth 2.0 client-credentials and JWT access tokens; a
+  legacy Bread Classic Merchant API manages checkout carts and transactions; and
+  browser (JavaScript) plus native iOS and Android SDKs render placements,
+  prequalification (RTPS), and the Bread checkout modal on merchant storefronts.
+  Bread also ships e-commerce platform plugins (Shopify, Magento 2, BigCommerce,
+  WooCommerce, Miva, Volusion, Salesforce Commerce Cloud) and a partner sandbox.
+  This profile was surfaced as a portfolio company of Bessemer Venture Partners.
 url: https://raw.githubusercontent.com/api-evangelist/bread-financial/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -12,11 +38,35 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-18'
 tags:
 - Company
 - Fintech
-apis: []
+- Payments
+- Buy Now Pay Later
+- Lending
+- Consumer Finance
+- Point of Sale
+- Ecommerce
+apis:
+- name: BreadPay Platform API
+  description: >-
+    Next-generation Bread Pay REST API for managing buyers, merchant accounts,
+    personalized payment options and pricing, and the merchant transaction
+    lifecycle (authorize, capture, cancel, refund). Secured with OAuth 2.0
+    client-credentials; access tokens are JWTs. Production and preview
+    environments are available.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Payments
+  - Buy Now Pay Later
+  - Transactions
+  properties:
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers/docs
+  - type: APIReference
+    url: https://platform-docs.breadpayments.com/bread-developers/reference
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -24,4 +74,49 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://www.getbread.com
+  url: https://www.breadfinancial.com
+- type: DeveloperPortal
+  url: https://platform-docs.breadpayments.com/bread-developers/docs
+- type: Documentation
+  url: https://platform-docs.breadpayments.com/bread-developers/docs
+- type: APIReference
+  url: https://platform-docs.breadpayments.com/bread-developers/reference
+- type: GettingStarted
+  url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+- type: Support
+  url: https://platform-docs.breadpayments.com/bread-onboarding/docs/support
+- type: GitHubOrganization
+  url: https://github.com/bppub
+- type: PrivacyPolicy
+  url: https://www.breadfinancial.com/en/privacy-policy.html
+- type: Packages
+  url: packages/bread-financial-packages.yml
+- type: SDKs
+  url: packages/bread-financial-packages.yml
+- type: LLMsTxt
+  url: llms/bread-financial-llms.txt
+- type: Authentication
+  url: authentication/bread-financial-authentication.yml
+- type: Conventions
+  url: conventions/bread-financial-conventions.yml
+- type: Conformance
+  url: conformance/bread-financial-conformance.yml
+- type: Lifecycle
+  url: lifecycle/bread-financial-lifecycle.yml
+- type: Sandbox
+  url: sandbox/bread-financial-sandbox.yml
+- type: Components
+  url: components/bread-financial-components.yml
+- type: MCPServer
+  url: mcp/bread-financial-mcp.yml
+- type: Webhooks
+  url: asyncapi/bread-financial-webhooks.yml
+- type: WellKnown
+  url: well-known/bread-financial-well-known.yml
+- type: DomainSecurity
+  url: security/bread-financial-domain-security.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

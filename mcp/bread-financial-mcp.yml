@@ -1,0 +1,36 @@
+generated: '2026-07-18'
+method: derived
+status: candidate
+source: https://platform-docs.breadpayments.com/bread-developers/reference
+description: >-
+  No official hosted/remote Bread Pay MCP server was found. This is a CANDIDATE
+  tool list derived from the documented BreadPay Platform API capabilities
+  (buyers, merchant accounts, payment options, and the transaction lifecycle).
+  Tools map to documented operations; the only operationId verified verbatim in
+  the reference is authorizeTransaction. Not authoritative — a starting point for
+  building an MCP server.
+server:
+  name: bread-financial
+  transport: http
+  url: null
+  base_url: https://api.platform.breadpayments.com/api
+  auth: OAuth 2.0 client-credentials (JWT bearer)
+tools:
+- name: authorize_transaction
+  description: Authorize a single transaction (full or partial amount) by transaction ID.
+  source_operation: authorizeTransaction (POST /api/transaction/{transactionID}/authorize)
+- name: capture_transaction
+  description: Capture an authorized transaction.
+  source_operation: documented transaction lifecycle (capture)
+- name: cancel_transaction
+  description: Cancel a transaction.
+  source_operation: documented transaction lifecycle (cancel)
+- name: refund_transaction
+  description: Refund a captured transaction.
+  source_operation: documented transaction lifecycle (refund)
+- name: get_buyer
+  description: Manage/retrieve a buyer.
+  source_operation: documented buyers capability
+- name: get_payment_options
+  description: Retrieve personalized payment options and pricing for a buyer.
+  source_operation: documented payment-options capability

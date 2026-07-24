@@ -1,0 +1,23 @@
+generated: '2026-07-18'
+method: searched
+description: >-
+  Probe of the /.well-known/ discovery surface on the Bread Pay API and website
+  hosts. No well-known discovery documents were served (the API host returns 404
+  for all probed paths; the website hosts 302-redirect). Absence is recorded
+  data, not a gap to fabricate.
+hosts:
+- host: https://api.platform.breadpayments.com
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+- host: https://payments.breadfinancial.com
+  documents:
+  - {path: /.well-known/security.txt, status: 302}
+  - {path: /.well-known/openid-configuration, status: 302}
+  - {path: /.well-known/oauth-authorization-server, status: 302}
+- host: https://www.getbread.com
+  documents:
+  - {path: /.well-known/security.txt, status: 302}

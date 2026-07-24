@@ -1,0 +1,24 @@
+generated: '2026-07-18'
+method: searched
+source: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+description: >-
+  Cross-cutting standards conformance for the Bread Pay developer surface,
+  asserted only where the published documentation provides evidence. No OpenAPI
+  was available to derive additional conformance from. No published compliance
+  certification program page was found, so no Compliance pointer is emitted.
+standards:
+- id: oauth2
+  conforms: true
+  evidence: BreadPay Platform API documents OAuth 2.0 Client Credentials Flow (RFC 6749).
+- id: jwt
+  conforms: true
+  evidence: Access tokens are issued in JWT format (RFC 7519).
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: No application/problem+json error format claimed in public docs.
+- id: oidc
+  conforms: false
+- id: fapi
+  conforms: false
+- id: psd2
+  conforms: false

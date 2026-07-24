@@ -1,0 +1,45 @@
+generated: '2026-07-18'
+method: searched
+source: https://platform-docs.breadpayments.com/bread-onboarding/docs/partner-sandbox
+docs:
+- https://platform-docs.breadpayments.com/bread-onboarding/docs/partner-sandbox
+- https://platform-docs.breadpayments.com/bread-onboarding/docs/sandbox-overview
+- https://platform-docs.breadpayments.com/bread-onboarding/docs/sandbox-access
+- https://platform-docs.breadpayments.com/bread-onboarding/docs/sandbox-testing-with-postman
+- https://platform-docs.breadpayments.com/bread-onboarding/docs/sandbox-request-scenarios
+description: >-
+  Bread Pay publishes a Partner Sandbox for exercising the API without touching
+  production. The next-generation platform exposes a preview environment; the
+  enterprise servicing sandbox is hosted separately. Access is gated by
+  Bread-issued credentials and IP allow-listing. Test values (buyer data, cards)
+  are issued per partner by Bread and are NOT published verbatim, so none are
+  invented here.
+environments:
+- name: platform-preview
+  base_url: https://api-preview.platform.breadpayments.com/api
+  notes: Preview environment for the BreadPay Platform API, parallel to production api.platform.breadpayments.com/api.
+- name: partner-sandbox (enterprise servicing)
+  base_url: https://entapi-sandbox.alldata.net/api/
+  notes: >-
+    Enterprise servicing sandbox (Alliance Data legacy host). Mirrors the UAT
+    environment. Requires Basic Auth (Base64 client_id:client_secret) plus a
+    client_token header, and requests must originate from allow-listed IP ranges.
+access:
+  authentication: HTTP Basic (Base64 of client_id:client_secret) + client_token header
+  ip_allowlist: true
+  ip_allowlist_notes: Requests must come from whitelisted IP ranges (same as UAT).
+  credentials_issued_by: Bread Financial (designated per partner)
+tooling:
+  postman: Documented "Testing with Postman" guide; Postman can auto-encode the Basic Auth header.
+request_scenarios:
+- Account
+- Acquisition
+- Auth
+- Rewards
+- Data Exchange
+test_values:
+  published: false
+  notes: >-
+    Bread issues sandbox buyer data, cards, and credentials to partners
+    directly; they are not published on the public docs, so no magic test values
+    are recorded here (no fabrication).

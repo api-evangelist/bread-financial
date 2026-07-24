@@ -1,0 +1,24 @@
+generated: '2026-07-18'
+method: searched
+source: https://platform-docs.breadpayments.com/bread-developers/docs
+docs:
+- https://platform-docs.breadpayments.com/bread-developers/docs
+description: >-
+  Bread Pay documents a webhook event surface on the BreadPay Platform developer
+  docs (setup, validation, and testing guides), versioned v1.0 and v2.0. No
+  machine-readable AsyncAPI document is published, so this captures the webhook
+  surface as a catalog rather than a spec (no events are fabricated — the public
+  docs describe the mechanism and versions but do not enumerate a full event
+  list on the pages reviewed).
+spec_type: Webhooks
+webhooks:
+  supported: true
+  versions: [v1.0, v2.0]
+  configuration: Webhooks are set up and managed via the developer/merchant docs (webhook setup guide).
+  validation: Signature validation is documented (webhook validation guide).
+  testing: A webhook testing guide is published.
+  status_and_errors: Webhook delivery status codes and error responses are documented.
+notes: >-
+  Event-type enumeration was not published on the public developer pages
+  reviewed; only the webhook mechanism, versions, setup, validation, and testing
+  are documented. Upgrade to a full AsyncAPI/event catalog if Bread publishes one.

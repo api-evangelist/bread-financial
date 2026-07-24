@@ -1,0 +1,42 @@
+generated: '2026-07-18'
+method: searched
+source: https://platform-docs.breadpayments.com/bread-developers/docs
+description: >-
+  Cross-cutting request/response conventions for the Bread Pay developer
+  surface, captured from the published developer docs. No OpenAPI was available
+  to derive from, so only conventions the provider documents are recorded here.
+  Idempotency is NOT documented as a public contract and is therefore not
+  asserted.
+base_urls:
+  platform_production: https://api.platform.breadpayments.com/api
+  platform_preview: https://api-preview.platform.breadpayments.com/api
+  sandbox_servicing: https://entapi-sandbox.alldata.net/api/
+api_style: REST over HTTPS, JSON request/response
+authentication:
+  scheme: OAuth 2.0 client-credentials, JWT bearer access token (platform); HTTP Basic + client_token (sandbox)
+  detail: authentication/bread-financial-authentication.yml
+versioning:
+  scheme: major version in resource / webhook payloads
+  known_versions: [v1.0, v2.0]
+  notes: >-
+    Webhooks and platform resources are documented against both v1.0 and v2.0.
+    The "Bread 2.0" platform is the current generation; merchants are guided to
+    upgrade e-commerce plugins to 2.0.
+webhooks:
+  supported: true
+  signature_validation: documented (webhook validation and testing guides)
+  detail: asyncapi/bread-financial-webhooks.yml
+errors:
+  envelope: HTTP status codes plus JSON error responses (status codes + error responses documented)
+  format: unknown (no RFC 9457 problem+json claim published)
+idempotency:
+  supported: unknown
+  notes: No public idempotency-key contract is documented; not asserted.
+pagination:
+  style: unknown
+  notes: Not documented on the public developer pages reviewed.
+cross_links:
+  authentication: authentication/bread-financial-authentication.yml
+  lifecycle: lifecycle/bread-financial-lifecycle.yml
+  sandbox: sandbox/bread-financial-sandbox.yml
+  webhooks: asyncapi/bread-financial-webhooks.yml

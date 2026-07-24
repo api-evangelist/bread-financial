@@ -1,0 +1,33 @@
+generated: '2026-07-18'
+method: searched
+source: https://platform-docs.breadpayments.com/bread-onboarding/docs/unified-sdk-overview
+docs:
+- https://platform-docs.breadpayments.com/bread-onboarding/docs/unified-sdk-overview
+- https://platform-docs.breadpayments.com/bread-onboarding/docs/rendering-placements-programmatically
+- https://platform-docs.breadpayments.com/bread-onboarding/docs/mobile-sdk-overview
+description: >-
+  Bread Pay's client-side, embeddable UI surface — the placements, modal, and
+  prequalification experiences rendered on merchant storefronts and native apps.
+  Distinct from server-side integration in packages/. The browser SDK exposes
+  the global BreadPayments object; native iOS/Android SDKs render equivalent
+  placements.
+libraries:
+- {name: Bread Pay JavaScript SDK (BreadPayments), purpose: Loads and mounts placements, modal, and prequalification in the browser; catalogued in packages/}
+- {name: breadfinancial-brand-partners-ios, purpose: Renders native iOS placements and prequalification}
+- {name: breadfinancial-brand-partners-android, purpose: Renders native Android placements and prequalification}
+families:
+  web:
+    description: Browser components rendered by the BreadPayments SDK (built on Zoid cross-domain components).
+    components:
+    - {name: Placements, description: Embedded on-site financing messaging / offer placements rendered programmatically via RegisterPlacements.}
+    - {name: Bread modal, description: Overlay checkout/application experience launched programmatically or from a placement.}
+    - {name: Embedded Bread modal, description: In-page embedded rendering of the Bread modal.}
+    - {name: Real-Time Prequalification (RTPS), description: Prequalification experience submitted via SubmitRtps and OpenExperienceForPlacement.}
+    - {name: Enhanced Checkout, description: Configurable enhanced checkout experience.}
+  mobile:
+    description: Native placement + prequalification components in the iOS and Android brand-partner SDKs.
+    components:
+    - {name: Register Placement, description: Native placement rendering with styling/display customization.}
+    - {name: Unified Prequalification, description: Native unified prequalification flow.}
+    - {name: Batch Prescreen / Real-Time Prescreen, description: Native prescreen configuration.}
+    - {name: Application Callbacks / Customer Status Events, description: Native callbacks for application and customer application status.}
