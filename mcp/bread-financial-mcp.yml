@@ -2,13 +2,10 @@ generated: '2026-07-18'
 method: derived
 status: candidate
 source: https://platform-docs.breadpayments.com/bread-developers/reference
-description: >-
-  No official hosted/remote Bread Pay MCP server was found. This is a CANDIDATE
-  tool list derived from the documented BreadPay Platform API capabilities
-  (buyers, merchant accounts, payment options, and the transaction lifecycle).
-  Tools map to documented operations; the only operationId verified verbatim in
-  the reference is authorizeTransaction. Not authoritative — a starting point for
-  building an MCP server.
+description: No official hosted/remote Bread Pay MCP server was found. This is a CANDIDATE tool list derived
+  from the documented BreadPay Platform API capabilities (buyers, merchant accounts, payment options,
+  and the transaction lifecycle). Tools map to documented operations; the only operationId verified verbatim
+  in the reference is authorizeTransaction. Not authoritative — a starting point for building an MCP server.
 server:
   name: bread-financial
   transport: http
@@ -34,3 +31,9 @@ tools:
 - name: get_payment_options
   description: Retrieve personalized payment options and pricing for a buyer.
   source_operation: documented payment-options capability
+deployment:
+  mode: none
+  verified: derived
+  tools: 6
+  checked: '2026-08-12'
+  source: catalog MCP census
