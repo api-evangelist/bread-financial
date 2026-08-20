@@ -46,6 +46,15 @@ tags:
 - Buy Now Pay Later
 - Lending
 - Consumer Finance
+- Point-of-Sale
+- E-Commerce
+tags_raw:
+- Company
+- Fintech
+- Payments
+- Buy Now Pay Later
+- Lending
+- Consumer Finance
 - Point of Sale
 - Ecommerce
 apis:
@@ -59,6 +68,10 @@ apis:
   humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
   baseURL: https://api.platform.breadpayments.com/api
   tags:
+  - Payments
+  - Buy Now Pay Later
+  - Transaction
+  tags_raw:
   - Payments
   - Buy Now Pay Later
   - Transactions
