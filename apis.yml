@@ -24,22 +24,16 @@ accessModel:
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread-financial.png
 name: Bread Financial
-description: >-
-  Bread Financial (formerly Alliance Data Systems) is a US consumer financial
-  services company providing branded and co-brand credit cards, private-label
-  and general-purpose lending, and point-of-sale buy-now-pay-later financing
-  under the Bread Pay brand. Its developer surface, Bread Pay, exposes a REST
-  API platform for merchants to embed installment and revolving financing into
-  online and in-store checkout: the next-generation BreadPay Platform API
-  (api.platform.breadpayments.com) manages buyers, merchant accounts, payment
-  options, pricing, and the transaction lifecycle (authorize, capture, cancel,
-  refund), secured with OAuth 2.0 client-credentials and JWT access tokens; a
-  legacy Bread Classic Merchant API manages checkout carts and transactions; and
-  browser (JavaScript) plus native iOS and Android SDKs render placements,
-  prequalification (RTPS), and the Bread checkout modal on merchant storefronts.
-  Bread also ships e-commerce platform plugins (Shopify, Magento 2, BigCommerce,
-  WooCommerce, Miva, Volusion, Salesforce Commerce Cloud) and a partner sandbox.
-  This profile was surfaced as a portfolio company of Bessemer Venture Partners.
+description: 'Bread Financial (formerly Alliance Data Systems) is a US consumer financial services company providing
+  branded and co-brand credit cards, private-label and general-purpose lending, and point-of-sale buy-now-pay-later
+  financing under the Bread Pay brand. Its developer surface, Bread Pay, exposes a REST API platform for merchants
+  to embed installment and revolving financing into online and in-store checkout: the next-generation BreadPay Platform
+  API (api.platform.breadpayments.com) manages buyers, merchant accounts, payment options, pricing, and the transaction
+  lifecycle (authorize, capture, cancel, refund), secured with OAuth 2.0 client-credentials and JWT access tokens;
+  a legacy Bread Classic Merchant API manages checkout carts and transactions; and browser (JavaScript) plus native
+  iOS and Android SDKs render placements, prequalification (RTPS), and the Bread checkout modal on merchant storefronts.
+  Bread also ships e-commerce platform plugins (Shopify, Magento 2, BigCommerce, WooCommerce, Miva, Volusion, Salesforce
+  Commerce Cloud) and a partner sandbox. This profile was surfaced as a portfolio company of Bessemer Venture Partners.'
 url: https://raw.githubusercontent.com/api-evangelist/bread-financial/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -70,12 +64,9 @@ tags_raw:
 - Ecommerce
 apis:
 - name: BreadPay Platform API
-  description: >-
-    Next-generation Bread Pay REST API for managing buyers, merchant accounts,
-    personalized payment options and pricing, and the merchant transaction
-    lifecycle (authorize, capture, cancel, refund). Secured with OAuth 2.0
-    client-credentials; access tokens are JWTs. Production and preview
-    environments are available.
+  description: Next-generation Bread Pay REST API for managing buyers, merchant accounts, personalized payment options
+    and pricing, and the merchant transaction lifecycle (authorize, capture, cancel, refund). Secured with OAuth
+    2.0 client-credentials; access tokens are JWTs. Production and preview environments are available.
   humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
   baseURL: https://api.platform.breadpayments.com/api
   tags:
@@ -91,6 +82,33 @@ apis:
     url: https://platform-docs.breadpayments.com/bread-developers/docs
   - type: APIReference
     url: https://platform-docs.breadpayments.com/bread-developers/reference
+- aid: bread-financial:bread-pay-api
+  name: Bread Pay API
+  tags:
+  - Installment Financing
+  - Checkout
+  - Payments
+  - BNPL
+  humanURL: https://developers.breadfinancial.com/
+  properties:
+  - url: https://developers.breadfinancial.com/
+    type: Documentation
+  description: The Bread Pay API enables merchants to integrate installment financing options into online and in-store
+    checkout flows. Supports creating financing applications, retrieving loan statuses, managing transactions, and
+    handling merchant-side operations for buy now pay later programs.
+- aid: bread-financial:split-pay-api
+  name: Bread SplitPay API
+  tags:
+  - Short-Term Financing
+  - Split Payments
+  - Retail
+  humanURL: https://developers.breadfinancial.com/
+  properties:
+  - url: https://developers.breadfinancial.com/
+    type: Documentation
+  description: SplitPay is a short-term financing alternative for retail merchants, enabling customers to split
+    purchases into manageable payments and helping retailers attract price-sensitive customers while increasing
+    average transaction values.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -131,14 +149,22 @@ common:
   url: sandbox/bread-financial-sandbox.yml
 - type: Components
   url: components/bread-financial-components.yml
-- type: MCPServer
+- type: X-MCPServerCandidate
   url: mcp/bread-financial-mcp.yml
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool
+    list derived from the published API contracts, not an existing server. The scorer already read the manifest
+    and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server
+    that does not exist.'
 - type: Webhooks
   url: asyncapi/bread-financial-webhooks.yml
 - type: WellKnown
   url: well-known/bread-financial-well-known.yml
 - type: DomainSecurity
   url: security/bread-financial-domain-security.yml
+- type: GitHubOrganization
+  url: https://github.com/getbread
+- type: Documentation
+  url: https://developers.breadfinancial.com/
 x-enrichment:
   date: '2026-07-19'
   status: backfilled
