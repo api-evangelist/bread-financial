@@ -1,17 +1,17 @@
 ---
 kin_checks:
   slug: bread-financial
-  schema_version: 0.18.2
-  scored_at: '2026-09-04'
-  run_ts: 2026-09-04T062714
+  schema_version: 0.21.0
+  scored_at: '2026-09-12'
+  run_ts: 2026-09-12T080032
   note: Actionable checks only (missed + partial). earned/na are every other check
-    in rubric/scoring-0.18.2.yml; counts below let you verify that.
+    in rubric/scoring-0.21.0.yml; counts below let you verify that.
   counts:
-    total: 132
-    earned: 22
-    partial: 6
-    missed: 64
-    na: 40
+    total: 136
+    earned: 42
+    partial: 10
+    missed: 62
+    na: 22
   checks:
   - id: base_url_per_api
     status: missed
@@ -19,10 +19,18 @@ kin_checks:
     status: missed
   - id: apis_json_self_hosted
     status: missed
-  - id: servers_resolvable
+  - id: openapi_3_2
     status: missed
-  - id: examples_present
+    detail: 0 of 9 openapi documents pass
+  - id: openapi_3_1
     status: missed
+    detail: 0 of 9 openapi documents pass
+  - id: components_reuse
+    status: missed
+    detail: 0 of 9 openapi documents pass
+  - id: webhooks_or_callbacks
+    status: missed
+    detail: 0 of 9 openapi documents pass
   - id: inbound_contract_published
     status: missed
   - id: json_schema_present
@@ -34,8 +42,6 @@ kin_checks:
   - id: json_ld_class_depth
     status: missed
   - id: json_ld_property_depth
-    status: missed
-  - id: lifecycle_documented
     status: missed
   - id: domain_standard_conformance
     status: missed
@@ -70,8 +76,6 @@ kin_checks:
   - id: cli_present
     status: missed
   - id: postman_present
-    status: missed
-  - id: agent_skill_present
     status: missed
   - id: blog_present
     status: missed
@@ -111,21 +115,17 @@ kin_checks:
     status: missed
   - id: reg_pci_sca
     status: missed
+  - id: upsert_outcome_discriminator
+    status: missed
+  - id: upsert_named
+    status: missed
   - id: agentic_access
     status: missed
   - id: reversibility_documented
     status: missed
   - id: mcp_server
     status: missed
-  - id: idempotency
-    status: missed
-  - id: error_semantics
-    status: missed
-  - id: openapi_examples
-    status: missed
   - id: rate_limit_signal
-    status: missed
-  - id: agent_skills
     status: missed
   - id: well_known_catalog
     status: missed
@@ -143,6 +143,17 @@ kin_checks:
     status: missed
   - id: agentic_commerce
     status: missed
+  - id: security_schemes_defined
+    status: partial
+    earned: 3.56
+    detail: 8 of 9 openapi documents pass
+  - id: security_applied
+    status: partial
+    earned: 2.67
+    detail: 8 of 9 openapi documents pass
+  - id: lifecycle_documented
+    status: partial
+    earned: 0.92
   - id: github_org_present
     status: partial
     earned: 1.0
@@ -167,3 +178,7 @@ kin_checks:
     status: partial
     earned: 3.5
     detail: 'grade: bearer'
+  - id: error_semantics
+    status: partial
+    earned: 4.0
+    detail: 'grade: documented'
