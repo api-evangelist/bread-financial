@@ -55,7 +55,11 @@ tags_raw:
 - Ecommerce
 apis:
 - name: BreadPay Platform API
-  description: Next-generation Bread Pay REST API for managing buyers, merchant accounts, personalized payment options and pricing, and the merchant transaction lifecycle (authorize, capture, cancel, refund). Secured with OAuth 2.0 client-credentials; access tokens are JWTs. Production and preview environments are available.
+  description: >-
+    Next-generation Bread Pay REST API for managing buyers, merchant accounts, personalized payment options
+    and pricing, and the merchant transaction lifecycle (authorize, capture, cancel, refund). Secured
+    with OAuth 2.0 client-credentials; access tokens are JWTs. Production and preview environments are
+    available.
   humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
   baseURL: https://api.platform.breadpayments.com/api
   tags:
@@ -77,12 +81,20 @@ apis:
   - Installment Financing
   - Checkout
   - Payments
+  - Buy Now Pay Later
+  tags_raw:
+  - Installment Financing
+  - Checkout
+  - Payments
   - BNPL
   humanURL: https://developers.breadfinancial.com/
   properties:
   - url: https://developers.breadfinancial.com/
     type: Documentation
-  description: The Bread Pay API enables merchants to integrate installment financing options into online and in-store checkout flows. Supports creating financing applications, retrieving loan statuses, managing transactions, and handling merchant-side operations for buy now pay later programs.
+  description: >-
+    The Bread Pay API enables merchants to integrate installment financing options into online and in-store
+    checkout flows. Supports creating financing applications, retrieving loan statuses, managing transactions,
+    and handling merchant-side operations for buy now pay later programs.
 - aid: bread-financial:split-pay-api
   name: Bread SplitPay API
   tags:
@@ -93,28 +105,10 @@ apis:
   properties:
   - url: https://developers.breadfinancial.com/
     type: Documentation
-  description: SplitPay is a short-term financing alternative for retail merchants, enabling customers to split purchases into manageable payments and helping retailers attract price-sensitive customers while increasing average transaction values.
-- aid: bread-financial:bread-pay-api
-  name: BreadPay Checkout API
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
-  tags:
-  - Installment Financing
-  - Checkout
-  - Payments
-  - BNPL
-  - Virtual Card
-  humanURL: https://platform-docs.breadpayments.com/bread-developers/reference/checkout-introduction
-  baseURL: https://api.platform.breadpayments.com
-  properties:
-  - url: openapi/bread-checkout-openapi.json
-    type: OpenAPI
-  - url: overlays/bread-checkout-overlay.yaml
-    type: Overlay
-  - url: https://platform-docs.breadpayments.com/bread-developers
-    type: Documentation
-  - url: https://docs.breadpayments.com/oas/v2/2.0/checkout.openapi3.json
-    type: OpenAPI
-  description: Checkout supports the buyer's shopping journey — starting and decisioning a financing application, returning personalized payment agreement options, completing checkout in-store or online, and issuing virtual cards into Apple Pay or Google Pay wallets. 18 operations.
+  description: >-
+    SplitPay is a short-term financing alternative for retail merchants, enabling customers to split purchases
+    into manageable payments and helping retailers attract price-sensitive customers while increasing
+    average transaction values.
 - aid: bread-financial:split-pay-api
   name: Bread SplitPay
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
@@ -127,156 +121,461 @@ apis:
   properties:
   - url: https://platform-docs.breadpayments.com/bread-onboarding
     type: Documentation
-  description: SplitPay is Bread's short-term, card-funded split-payment product for retail merchants. It is delivered through the same BreadPay Platform contracts and the same hosted SDK as installment financing rather than through a separate API surface — Bread publishes SplitPay-specific integration and test guidance (test card 4000000000000002) but no SplitPay-only OpenAPI.
-- aid: bread-financial:merchant-operations-api
-  name: BreadPay Merchant Operations API
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
+  description: >-
+    SplitPay is Bread's short-term, card-funded split-payment product for retail merchants. It is delivered
+    through the same BreadPay Platform contracts and the same hosted SDK as installment financing rather
+    than through a separate API surface — Bread publishes SplitPay-specific integration and test guidance
+    (test card 4000000000000002) but no SplitPay-only OpenAPI.
+- aid: bread-financial:bread-financial-application-api
+  name: Bread Financial Application API
+  description: The Application API from Bread Financial — 5 operation(s) for application.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
   tags:
-  - Transactions
-  - Settlement
-  - Refunds
-  - Reporting
-  - Carts
-  humanURL: https://platform-docs.breadpayments.com/bread-developers/reference/merchant-operations-introduction
-  baseURL: https://api.platform.breadpayments.com
+  - Application
   properties:
-  - url: openapi/bread-merchant-operations-openapi.json
-    type: OpenAPI
-  - url: overlays/bread-merchant-operations-overlay.yaml
-    type: Overlay
-  - url: skills/bread-authorize-and-settle-a-transaction.md
-    type: AgentSkill
-  - url: skills/bread-refund-or-cancel-a-transaction.md
-    type: AgentSkill
-  description: The merchant-facing transaction lifecycle — authorize, settle, refund, cancel, rescind, extend expiration — plus carts, fulfillment detail, and settlement/funding/targeting reporting exports. Transaction state changes are guarded by an ETag/If-Match revision check that answers 412 on a mismatch. 32 operations.
-- aid: bread-financial:servicing-api
-  name: BreadPay Servicing API
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
+  - type: OpenAPI
+    url: openapi/bread-financial-application-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-as-low-as-api
+  name: Bread Financial As Low As API
+  description: The As Low As API from Bread Financial — 2 operation(s) for as low as.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
   tags:
-  - Loan Servicing
-  - Payments
+  - As Low As
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-as-low-as-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-auth-api
+  name: Bread Financial Auth API
+  description: Provides authentication support for BreadPayments platform
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Auth
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-auth-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-buyer-api
+  name: Bread Financial Buyer API
+  description: The Buyer API from Bread Financial — 9 operation(s) for buyer.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Buyer
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-buyer-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-cart-api
+  name: Bread Financial Cart API
+  description: The Cart API from Bread Financial — 4 operation(s) for cart.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Cart
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-cart-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-client-management-api
+  name: Bread Financial Client Management API
+  description: The Client Management API from Bread Financial — 1 operation(s) for client management.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Client Management
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-client-management-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-disclosure-templates-api
+  name: Bread Financial Disclosure Templates API
+  description: >-
+    The Disclosure Templates API from Bread Financial — 1 operation(s) for disclosure templates.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Disclosure Templates
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-disclosure-templates-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-disclosures-api
+  name: Bread Financial Disclosures API
+  description: The Disclosures API from Bread Financial — 6 operation(s) for disclosures.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
   - Disclosures
-  - Disputes
-  - Post-Purchase
-  humanURL: https://platform-docs.breadpayments.com/bread-developers/reference/servicing-1-introduction
-  baseURL: https://api.platform.breadpayments.com
   properties:
-  - url: openapi/bread-servicing-openapi.json
-    type: OpenAPI
-  - url: overlays/bread-servicing-overlay.yaml
-    type: Overlay
-  - url: skills/bread-take-a-payment-on-a-payment-agreement.md
-    type: AgentSkill
-  description: The buyer's post-purchase journey — payment agreements, balances and ledger breakdowns, autopay enrollment, scheduled and ad-hoc payments, refunds, fee and principal waivers, product disputes, deferred interest, "as low as" offers and regulatory disclosure generation. The largest definition at 64 operations, and the only one carrying an idempotency key.
-- aid: bread-financial:buyer-management-api
-  name: BreadPay Buyer Management API
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
+  - type: OpenAPI
+    url: openapi/bread-financial-disclosures-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-events-api
+  name: Bread Financial Events API
+  description: Event status retrieval and replay mechanism
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
   tags:
-  - Identity
-  - Consumer Credit
-  - KYC
-  - PII
-  humanURL: https://platform-docs.breadpayments.com/bread-developers/reference/buyer-management-introduction
-  baseURL: https://api.platform.breadpayments.com
+  - Events
   properties:
-  - url: openapi/bread-buyer-management-openapi.json
-    type: OpenAPI
-  - url: overlays/bread-buyer-management-overlay.yaml
-    type: Overlay
-  description: Registration, lookup and management of buyers and their contacts, credit-report data, status and authorized third parties, with fraud-management capabilities around allow-listing and self cure. Handles regulated consumer PII including credit-file results. 15 operations.
-- aid: bread-financial:payments-api
-  name: BreadPay Payments API
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
+  - type: OpenAPI
+    url: openapi/bread-financial-events-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-financing-dynamic-disclosure-api
+  name: Bread Financial Financing Dynamic Disclosure API
+  description: >-
+    The Financing Dynamic Disclosure API from Bread Financial — 1 operation(s) for financing dynamic disclosure.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Financing Dynamic Disclosure
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-financing-dynamic-disclosure-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-financing-payment-plan-api
+  name: Bread Financial Financing Payment Plan API
+  description: >-
+    The Financing Payment Plan API from Bread Financial — 1 operation(s) for financing payment plan.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Financing Payment Plan
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-financing-payment-plan-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-payment-agreement-api
+  name: Bread Financial Payment Agreement API
+  description: The Payment Agreement API from Bread Financial — 1 operation(s) for payment agreement.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Payment Agreement
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-payment-agreement-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-payment-methods-api
+  name: Bread Financial Payment Methods API
+  description: The Payment Methods API from Bread Financial — 8 operation(s) for payment methods.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
   tags:
   - Payment Methods
-  - Tokenization
-  - ACH
-  - Network Tokens
-  humanURL: https://platform-docs.breadpayments.com/bread-developers/reference/payments-introduction
-  baseURL: https://api.platform.breadpayments.com
   properties:
-  - url: openapi/bread-payments-openapi.json
-    type: OpenAPI
-  - url: overlays/bread-payments-overlay.yaml
-    type: Overlay
-  - url: errors/bread-decline-codes.yml
-    type: DeclineCodes
-  description: Stored payment methods and their access and transient tokens, ACH account unblocking, network token retrieval, payment execution and audit, refunds and payment reversal. 21 operations.
-- aid: bread-financial:foundations-api
-  name: BreadPay Foundations API
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
+  - type: OpenAPI
+    url: openapi/bread-financial-payment-methods-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-paymentproductenrollments-api
+  name: Bread Financial Payment Product Enrollments API
+  description: >-
+    The PaymentProductEnrollments API from Bread Financial — 1 operation(s) for paymentproductenrollments.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
   tags:
-  - Authentication
-  - OAuth
-  - Tokens
-  - Verification Codes
-  humanURL: https://platform-docs.breadpayments.com/bread-developers/reference/foundations-introduction
-  baseURL: https://api.platform.breadpayments.com
+  - PaymentProductEnrollments
   properties:
-  - url: openapi/bread-foundations-openapi.json
-    type: OpenAPI
-  - url: overlays/bread-foundations-overlay.yaml
-    type: Overlay
-  - url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
-    type: Authentication
-  description: Platform foundations — service-account authorization (HTTP Basic client credentials exchanged for a bearer JWT), buyer login and token refresh, org-token exchange, one-time verification codes, org codes, and the common models shared across every other domain. 15 operations.
-- aid: bread-financial:webhook-api
-  name: BreadPay Webhook API
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
+  - type: OpenAPI
+    url: openapi/bread-financial-paymentproductenrollments-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-payments-api
+  name: Bread Financial Payments API
+  description: The Payments API from Bread Financial — 8 operation(s) for payments.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
   tags:
-  - Webhooks
-  - Events
-  - CloudEvents
-  - Replay
-  humanURL: https://platform-docs.breadpayments.com/bread-developers/reference/webhook-1-introduction
-  baseURL: https://api.platform.breadpayments.com
+  - Payments
   properties:
-  - url: openapi/bread-webhook-openapi.json
-    type: OpenAPI
-  - url: overlays/bread-webhook-overlay.yaml
-    type: Overlay
-  - url: webhooks/bread-webhooks.yml
-    type: Webhooks
-  - url: skills/bread-subscribe-to-webhooks.md
-    type: AgentSkill
-  description: Self-service webhook subscription management — create, update and delete subscriptions with NONE, BASIC or static-bearer subscriber auth, list delivered events by status, replay failed events by id, fire a synthetic integration test event, and fetch the JWKs that verify the detached JWS signature on every delivery. Events are CloudEvents 1.0.2 over the HTTP binding. 9 operations.
-- aid: bread-financial:program-api
-  name: BreadPay Program API
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
+  - type: OpenAPI
+    url: openapi/bread-financial-payments-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-refunds-api
+  name: Bread Financial Refunds API
+  description: The Refunds API from Bread Financial — 3 operation(s) for refunds.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
   tags:
-  - Programs
-  - Payment Products
-  - Policies
-  - Enrollment
-  humanURL: https://platform-docs.breadpayments.com/bread-developers/reference/program-introduction
-  baseURL: https://api.platform.breadpayments.com
+  - Refunds
   properties:
-  - url: openapi/bread-program-openapi.json
-    type: OpenAPI
-  - url: overlays/bread-program-overlay.yaml
-    type: Overlay
-  description: Management of public programs, payment products and the policies that determine system behaviour and execution. Only one operation is published (getPaymentProductEnrollmentByMerchantID) against 47 component schemas, so the definition describes far more of the domain model than it exposes.
-- aid: bread-financial:tradein-api
-  name: BreadPay Tradein API
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
+  - type: OpenAPI
+    url: openapi/bread-financial-refunds-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-reporting-api
+  name: Bread Financial Reporting API
+  description: The Reporting API from Bread Financial — 7 operation(s) for reporting.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
   tags:
-  - Trade-In
-  - Upgrade
-  - Apple Program
-  humanURL: https://platform-docs.breadpayments.com/bread-developers/reference/tradein-introduction
-  baseURL: https://api.platform.breadpayments.com
+  - Reporting
   properties:
-  - url: openapi/bread-tradein-openapi.json
-    type: OpenAPI
-  - url: overlays/bread-tradein-overlay.yaml
-    type: Overlay
-  description: Streamlines the upgrade / trade-in flow for the Apple program — upgrade elections, trade-in payments, and linking an upgradeable loan to a payment agreement. 6 operations.
+  - type: OpenAPI
+    url: openapi/bread-financial-reporting-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-service-account-api
+  name: Bread Financial Service Account API
+  description: The Service Account API from Bread Financial — 1 operation(s) for service account.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Service Account
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-service-account-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-servicing-api
+  name: Bread Financial Servicing API
+  description: The Servicing API from Bread Financial — 48 operation(s) for servicing.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Servicing
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-servicing-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-subscription-management-api
+  name: Bread Financial Subscription Management API
+  description: Managing webhook subscriptions
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Subscription Management
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-subscription-management-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-tradein-api
+  name: Bread Financial Tradein API
+  description: The Tradein API from Bread Financial — 5 operation(s) for tradein.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Tradein
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-tradein-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-transaction-api
+  name: Bread Financial Transaction API
+  description: The Transaction API from Bread Financial — 15 operation(s) for transaction.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Transaction
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-transaction-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
+- aid: bread-financial:bread-financial-virtual-card-api
+  name: Bread Financial Virtual Card API
+  description: The Virtual Card API from Bread Financial — 12 operation(s) for virtual card.
+  humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
+  baseURL: https://api.platform.breadpayments.com/api
+  tags:
+  - Virtual Card
+  properties:
+  - type: OpenAPI
+    url: openapi/bread-financial-virtual-card-api-openapi.yml
+  - type: Documentation
+    url: https://platform-docs.breadpayments.com/bread-developers
+  - type: DeclineCodes
+    url: errors/bread-decline-codes.yml
+  - type: Authentication
+    url: https://platform-docs.breadpayments.com/bread-developers/docs/api-access
+  - type: Webhooks
+    url: webhooks/bread-webhooks.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/bread-checkout-overlay.yaml
+- type: Overlay
+  url: overlays/bread-merchant-operations-overlay.yaml
+- type: AgentSkill
+  url: skills/bread-authorize-and-settle-a-transaction.md
+- type: AgentSkill
+  url: skills/bread-refund-or-cancel-a-transaction.md
+- type: Overlay
+  url: overlays/bread-servicing-overlay.yaml
+- type: AgentSkill
+  url: skills/bread-take-a-payment-on-a-payment-agreement.md
+- type: Overlay
+  url: overlays/bread-buyer-management-overlay.yaml
+- type: Overlay
+  url: overlays/bread-payments-overlay.yaml
+- type: Overlay
+  url: overlays/bread-foundations-overlay.yaml
+- type: Overlay
+  url: overlays/bread-webhook-overlay.yaml
+- type: AgentSkill
+  url: skills/bread-subscribe-to-webhooks.md
+- type: Overlay
+  url: overlays/bread-program-overlay.yaml
+- type: Overlay
+  url: overlays/bread-tradein-overlay.yaml
 - type: Website
   url: https://www.breadfinancial.com
 - type: DeveloperPortal
