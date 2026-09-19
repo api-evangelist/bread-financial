@@ -168,6 +168,8 @@ apis:
   humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
   baseURL: https://api.platform.breadpayments.com/api
   tags:
+  - Authentication
+  tags_raw:
   - Auth
   properties:
   - type: OpenAPI
@@ -277,6 +279,8 @@ apis:
   humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
   baseURL: https://api.platform.breadpayments.com/api
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
@@ -442,6 +446,8 @@ apis:
   humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
   baseURL: https://api.platform.breadpayments.com/api
   tags:
+  - ServiceAccount
+  tags_raw:
   - Service Account
   properties:
   - type: OpenAPI
@@ -496,6 +502,8 @@ apis:
   humanURL: https://platform-docs.breadpayments.com/bread-developers/docs
   baseURL: https://api.platform.breadpayments.com/api
   tags:
+  - Trade-In
+  tags_raw:
   - Tradein
   properties:
   - type: OpenAPI
