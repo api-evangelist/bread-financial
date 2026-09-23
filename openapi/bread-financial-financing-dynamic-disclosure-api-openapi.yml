@@ -1,0 +1,174 @@
+openapi: 3.2.0
+info:
+  title: Servicing Financing Dynamic Disclosure API
+  description: Servicing supports a buyer's post purchase journey, enabling viewing and management of payment agreements across all payment products.
+  version: 2.0.0
+  contact:
+    email: partnership-growth@getbread.com
+servers:
+- url: https://api-preview.platform.breadpayments.com/
+  description: Preview environment
+- url: https://api.platform.breadpayments.com/
+  description: Production environment
+tags:
+- name: Financing Dynamic Disclosure
+paths:
+  /api/experience/dynamic-financing/dynamic-disclosure:
+    get:
+      operationId: getFinancingDynamicDisclosure
+      tags:
+      - Financing Dynamic Disclosure
+      summary: Get Financing Dynamic Disclosure
+      description: Retrieve dynamic disclosure copy for financing page
+      parameters:
+      - name: merchantId
+        in: query
+        description: ID of the merchant associated with the program.
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+      - name: programId
+        in: query
+        description: ID of financing program for dynamic disclosure calculations.
+        required: false
+        schema:
+          type: string
+          format: uuid
+        example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+      responses:
+        '200':
+          description: Dynamic disclosure copy.
+          content:
+            application/json:
+              schema:
+                description: Dynamic disclosure copy for financing page.
+                type: object
+                properties:
+                  installmentsDisclosureSymbol:
+                    description: Disclosure symbol for installments
+                    type: string
+                    format: string
+                    example: '*'
+                  installmentsDisclosureText:
+                    description: Installments disclosure text
+                    type: string
+                    format: string
+                    example: Minimum purchase of $100.00 required. Availability of terms may vary based on purchase price and/or product. Down payment may be required. Subject to approval of credit application. Rates range from 0.00%% to 15.99%% APR, resulting in, for example 12 monthly payments of $32.00 at 15.00% APR, per $1,000.00 borrowed. APRs will vary depending on credit qualifications, loan amount, and term. Bread Pay™ loans are made by Comenity Capital Bank, a Bread Financial™ company.
+                  splitPayDisclosureSymbol:
+                    description: Disclosure symbol for SplitPay
+                    type: string
+                    format: string
+                    example: '**'
+                  splitPayDisclosureText:
+                    description: SplitPay disclosure text
+                    type: string
+                    format: string
+                    example: Available for purchases between $50.00 and $1,000.00. Subject to approval of credit application.
+        '400':
+          description: Response for Bad Request Errors by as_low_as service.
+          content:
+            application/json:
+              schema:
+                description: Represents a error returned by as_low_as service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: As Low As error reason codes
+                    enum:
+                    - Bad_Request
+                    example: Bad_Request
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+        '500':
+          description: Response for Internal Server Errors returned by as_low_as service.
+          content:
+            application/json:
+              schema:
+                description: As-low-as.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: As Low As error reason codes
+                    enum:
+                    - Internal_Server_Error
+                    - Dependency_Unavailable
+                    example: Internal_Server_Error
+                example:
+                  message: Internal Server Error
+                  reason: Internal_Server_Error
+                  domain: ''
+                  metadata: {}
+                  code: 500
+components:
+  securitySchemes:
+    bearerAuthServicing:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    bearerAuthDisclosure:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token provided by the Auth service

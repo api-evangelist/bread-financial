@@ -1,0 +1,77 @@
+generated: '2026-09-04'
+method: derived
+source: >-
+  openapi/bread-checkout-openapi.json (Status, TxnAuth.authStatus, TxnAuth.responseStatus,
+  TxnAuth.responseSubStatus) and openapi/bread-servicing-openapi.json (PaymentStatus,
+  ProductDisputeReasonCode, PaymentAgreementReasonCode) — the published BreadPay Platform definitions
+provider: Bread Financial
+providerId: bread
+description: >-
+  Authorization and decline vocabulary for BreadPay installment / card applications and payments.
+  Bread publishes decision statuses as schema enumerations rather than as a prose decline-code
+  reference, so the values below are the complete published set; Bread publishes no plain-language
+  meaning or buyer-facing masking policy for them.
+envelope_field: status / authStatus / responseStatus / responseSubStatus
+complements: errors/bread-problem-types.yml
+
+application_decision:
+  schema: Status (Checkout)
+  values:
+    - code: APPROVED
+      meaning: Application approved; buyer may proceed to checkout
+    - code: DENIED
+      meaning: Application declined
+    - code: INELIGIBLE
+      meaning: Buyer is not eligible for the offered financing product
+    - code: NEEDS_ACTION
+      meaning: Additional buyer action required before a decision can be reached
+    - code: EXPIRED
+      meaning: The application or its offer window lapsed
+    - code: CANCELLED
+      meaning: The application was cancelled
+    - code: STARTED
+      meaning: Application opened, not yet decisioned
+    - code: ATTEMPTED_CHECKOUT
+    - code: ATTEMPTED_PREPARE_CHECKOUT
+    - code: CHECKOUT_PREPARED
+    - code: CHECKOUT_EXTENDED
+    - code: CHECKOUT_COMPLETED
+
+transaction_authorization:
+  schema: TxnAuth (Checkout)
+  auth_status: [APPROVED, DENIED]
+  response_status: [APPROVED, DENIED, FRAUD_PASS, FRAUD_FAIL]
+  response_sub_status:
+    - code: TRANSACTION_AUTH_DENIED_LOAN_CURRENTLY_OVERDUE
+      meaning: Authorization denied because the buyer's existing loan is overdue
+    - code: BUYER_STATUS_DENIAL
+      meaning: Authorization denied on buyer account status
+    - code: MARQETA_DENIAL
+      meaning: Denial returned by the card-issuing processor
+    - code: TRANSACTION_AUTH_UNKNOWN_SUBSTATUS
+    - code: UNKNOWN
+
+payment_status:
+  schema: PaymentStatus (Servicing)
+  values: [UNKNOWN_STATUS, SCHEDULED, PENDING, RECEIVED, FAILED, CANCELLED, CHARGED_BACK, REFUNDED,
+    RETURNED, REJECTED]
+  note: FAILED, REJECTED, RETURNED and CHARGED_BACK are the negative outcomes an integration must handle.
+
+dispute_reason_codes:
+  schema: ProductDisputeReasonCode (Servicing)
+  values: [UNSPECIFIED_REASON_CODE, PRODUCT_NOT_RECEIVED, DAMAGED_OR_DEFECTIVE_PRODUCT,
+    PRODUCT_NOT_AS_DESCRIBED, DUPLICATE_CHARGE, INCORRECT_CHARGE_AMOUNT, CANCELLATION_NOT_HONORED,
+    RETURN_REFUSAL_NOT_HONORED, INCORRECT_CREDIT_ISSUED, DIFFERENT_PAYMENT_METHOD_USED,
+    SERVICES_NOT_RENDERED, MISLEADING_MARKETING_MATERIAL, AUTHORIZATION_GIVEN_BY_THIRD_PARTY,
+    INVALID_DISPUTE_INSUFFICIENT_EVIDENCE, DISPUTE_RESOLVED_BY_MERCHANT, CUSTOMER_WITHDRAWS_DISPUTE,
+    HANDLED_BY_3RD_PARTY, RIGHT_OF_RESCISSION, OTHER]
+
+masked_to_buyers:
+  documented: false
+  note: >-
+    Bread publishes no statement on which decision or decline detail may be shown to the buyer. US
+    consumer-credit practice (ECOA / Regulation B adverse-action notice) governs how a denial is
+    communicated, and Bread — as the lender of record — issues that notice rather than the merchant.
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com

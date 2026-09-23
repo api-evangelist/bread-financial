@@ -1,0 +1,4477 @@
+openapi: 3.2.0
+info:
+  title: Checkout Virtual Card API
+  description: Checkout support a buyer's shopping journey, enabling them to receive and purchase products through personalized payment agreement options
+  version: 2.0.0
+  contact:
+    email: partnership-growth@getbread.com
+servers:
+- url: https://api-preview.platform.breadpayments.com/
+  description: Preview environment
+- url: https://api.platform.breadpayments.com/
+  description: Production environment
+tags:
+- name: Virtual Card
+paths:
+  /api/virtual-card/issuance:
+    post:
+      tags:
+      - Virtual Card
+      summary: Issue a new virtual card
+      description: Begins the issuance process for a new virtual card.
+      operationId: issueVirtualCard
+      security:
+      - bearerAuthVirtualCard:
+        - c:vc.issuance
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: Issuance data required for creating a virtual card
+              type: object
+              required:
+              - scopeID
+              - scopeType
+              - buyerID
+              - programID
+              properties:
+                scopeType:
+                  description: Scope type of the issuance.
+                  type: string
+                  enum:
+                  - APPLICATION
+                  - MERCHANT
+                  example: APPLICATION
+                scopeID:
+                  description: Scope ID for the issuance.  In the case of APPLICATION scopeType, scopeID will be application ID.
+                  type: string
+                  format: uuid
+                  example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                programID:
+                  description: ID of the program associated with this issuance.
+                  type: string
+                  format: uuid
+                  example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                buyerID:
+                  description: ID of the buyer associated with this issuance.
+                  type: string
+                  format: uuid
+                  example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                applicationSettings:
+                  description: Additional metadata if the scopeType is APPLICATION.
+                  type: object
+                  properties:
+                    merchantID:
+                      description: ID of the merchant associated with this issuance.
+                      type: string
+                      format: uuid
+                      example: e3b1d6f5-bc6a-4835-b40e-5f1a22dacf6a
+                  example:
+                    merchantID: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+              example:
+                scopeType: APPLICATION
+                scopeID: a2b1fa94-98fc-4de3-9b76-7c0de89fcbb1
+                programID: 0efc5a37-96fe-4636-9966-bf3ab26c3f29
+                buyerID: c1c1fdd1-811c-4ea2-bf37-2af9ea348299
+                applicationSettings:
+                  merchantID: e3b1d6f5-bc6a-4835-b40e-5f1a22dacf6a
+        description: Virtual card issuance request
+        required: true
+      responses:
+        '200':
+          description: The updated issuance information.
+          content:
+            application/json:
+              schema:
+                description: Information on the current issuance.
+                type: object
+                required:
+                - issuance
+                properties:
+                  issuance:
+                    description: Issuance data
+                    type: object
+                    required:
+                    - id
+                    - status
+                    - scopeType
+                    - scopeID
+                    properties:
+                      id:
+                        description: Issuance id
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      status:
+                        description: 'Provisioning status of the issuance.
+
+                          `REQUESTED` represents a requested but not yet issued card.
+
+                          `PROCESSING` represents a provisioning issuance.
+
+                          `ISSUED` represents a provisioned issuance.
+
+                          `FAILED` represents an issuance that failed to provision.
+
+                          `CLOSED` represents an issuance that has gone through checkout and can no longer be modified.'
+                        type: string
+                        enum:
+                        - REQUESTED
+                        - PROCESSING
+                        - ISSUED
+                        - FAILED
+                        - CLOSED
+                        example: ISSUED
+                      scopeType:
+                        description: Scope type of the issuance.
+                        type: string
+                        enum:
+                        - APPLICATION
+                        - MERCHANT
+                        example: APPLICATION
+                      scopeID:
+                        description: Scope ID for the issuance.  In the case of APPLICATION scopeType, scopeID will be application ID.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      buyerID:
+                        description: Buyer ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      programID:
+                        description: Program ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      tenantID:
+                        description: Tenant ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      paymentProductID:
+                        description: Payment Product ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      applicationSettings:
+                        description: Issuance data required for creating a virtual card
+                        type: object
+                        required:
+                        - applicationID
+                        properties:
+                          applicationID:
+                            description: ID of the application associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          merchantID:
+                            description: ID of the merchant associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          merchantLocationID:
+                            description: ID of the merchant location associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          offerID:
+                            description: ID of the offer associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          posCheckoutCapability:
+                            type: array
+                            description: Array of checkout options that are available at point of sale
+                            items:
+                              type: string
+                              enum:
+                              - TapToPay
+                              - KeyEntry
+                            example:
+                            - TapToPay
+                            - KeyEntry
+                        example:
+                          applicationID: ca9b3507-d225-496d-843e-cefcf43d4db8
+                          merchantID: 613e035a-4260-4337-9198-f273f295e222
+                          merchantLocationID: 86bdc28f-3484-404b-a2ac-f62d0d0a2ec8
+                          offerID: 53214430-7cf1-4854-931c-079f38fa6749
+                    example:
+                      id: b55438f7-c616-45da-ba46-a9798e44d12e
+                      status: ISSUED
+                      scopeType: APPLICATION
+                      scopeID: 416d8d11-09f1-49a5-bc58-7c6ec908607d
+                      buyerID: e9ecc348-017d-4091-ae43-09d30065ed57
+                      programID: d6b538c2-88b6-4644-ae4c-62a52f3798cf
+                      paymentProductID: 2dd9a835-48e1-4b7f-a15d-fa5e47eca0a4
+                      tenantID: b7e4f68d-983b-4d1d-b114-9e0d87eedd0b
+                      applicationSettings:
+                        applicationID: ca9b3507-d225-496d-843e-cefcf43d4db8
+                        merchantID: 613e035a-4260-4337-9198-f273f295e222
+                        merchantLocationID: 86bdc28f-3484-404b-a2ac-f62d0d0a2ec8
+                        offerID: 53214430-7cf1-4854-931c-079f38fa6749
+                  card:
+                    description: Card information
+                    type: object
+                    required:
+                    - cardID
+                    - status
+                    properties:
+                      cardToken:
+                        description: Card token.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      cardID:
+                        description: Card id.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      lastFour:
+                        description: Last 4 digits of the card number.  Added once card is provisioned.
+                        type: string
+                        example: '1234'
+                      status:
+                        description: "Provisioning status of a virtual card.\n`ACTIVE` represents a provisioned card.\n`FAILED` represents a card that failed provisioning.\n`SUSPENDED` represents a suspended card.  Can be reinstated.\n`TERMINATED` represents a terminated card.  Cannot be reinstated. \n`NOT_CREATED` represents initial state of the card which has not been created in the vendor yet."
+                        type: string
+                        enum:
+                        - ACTIVE
+                        - FAILED
+                        - SUSPENDED
+                        - TERMINATED
+                        - NOT_CREATED
+                        example: ACTIVE
+                      expiry:
+                        description: Expiration datetime. Added once card is provisioned.
+                        type: string
+                        format: date-time
+                        example: '2022-06-08T21:23:27Z'
+                      issuanceDate:
+                        description: Issuance datetime. Added once card is provisioned.
+                        type: string
+                        format: date-time
+                        example: '2022-06-01T21:23:27Z'
+                      pan:
+                        description: Card PAN.  Only available with r:vc.restricted scope.
+                        type: string
+                        example: '1234567812345678'
+                      cvv:
+                        description: Card CVV.  Only available with r:vc.restricted scope.
+                        type: string
+                        example: '123'
+                      capacity:
+                        required:
+                        - currency
+                        - value
+                        properties:
+                          currency:
+                            type: string
+                            description: The three letter currency code as defined in ISO 4217.
+                            example: USD
+                            minLength: 3
+                            maxLength: 3
+                            externalDocs:
+                              description: ISO 4217
+                              url: https://en.wikipedia.org/wiki/ISO_4217
+                          value:
+                            type: integer
+                            description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                            format: int64
+                            example: 100
+                        description: Represents a monetary amount in the specified currency
+                        example:
+                          currency: USD
+                          value: 50000
+                      card_type:
+                        description: SINGLE_USE or MULTI_USE
+                        type: string
+                        enum:
+                        - SINGLE_USE
+                        - MULTI_USE
+                        example: SINGLE_USE
+                    example:
+                      cardID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                      lastFour: '0700'
+                      status: ACTIVE
+                      expiry: '2022-06-08T21:23:27Z'
+                      issuanceDate: '2022-06-01T21:23:27Z'
+                      capacity:
+                        currency: USD
+                        value: 12345
+                      card_type: SINGLE_USE
+                  wallets:
+                    description: Wallets associated with the virtual card.
+                    type: array
+                    items:
+                      description: Wallet information
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - status
+                      - usedAtCheckout
+                      - error
+                      properties:
+                        id:
+                          description: Wallet id.
+                          type: string
+                          format: uuid
+                          example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                        type:
+                          description: Type of wallet.
+                          type: string
+                          enum:
+                          - APPLEPAY
+                          - GOOGLEPAY
+                          example: GOOGLEPAY
+                        status:
+                          description: 'Provisioning status of a digital wallet token.
+
+                            `PROVISIONING` represents a digital wallet token in the process of provisioning.
+
+                            `ACTIVE` represents a successfully provisioned digital wallet token.
+
+                            `FAILED` represents a digital wallet token that failed provisioning.
+
+                            `SUSPENDED` represents a suspended digital wallet token.  Can be reinstated.
+
+                            `TERMINATED` represents a terminated digital wallet token.  Cannot be reinstated.'
+                          type: string
+                          enum:
+                          - PROVISIONING
+                          - ACTIVE
+                          - FAILED
+                          - SUSPENDED
+                          - TERMINATED
+                          example: ACTIVE
+                        dpan:
+                          description: Wallet DPAN.  Only available with r:vc.restricted scope.
+                          type: string
+                          example: '1234567812345678'
+                        usedAtCheckout:
+                          description: True if this wallet was used for checkout.
+                          type: boolean
+                          example: true
+                        error:
+                          description: True if this wallet has an error state.
+                          type: boolean
+                          example: true
+                        applePay:
+                          description: ApplePay wallet information
+                          type: object
+                          required:
+                          - state
+                          properties:
+                            state:
+                              description: Unique state associated with the wallet.
+                              type: string
+                              format: uuid
+                              example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          example:
+                            state: 421c000b-5db2-4651-bd6e-4178438e7486
+                        googlePay:
+                          description: GooglePay wallet information
+                          type: object
+                          required:
+                          - publicWalletId
+                          - publicDeviceId
+                          properties:
+                            publicWalletId:
+                              description: GooglePay public wallet id
+                              type: string
+                              example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                            publicDeviceId:
+                              description: GooglePay public device id
+                              type: string
+                              example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                          example:
+                            publicWalletId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                            publicDeviceId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                      example:
+                        id: bc1c000b-5db2-4651-bd6e-4178438e7485
+                        type: APPLEPAY
+                        status: ACTIVE
+                        dpan: '1234567812345678'
+                        usedAtCheckout: true
+                        error: false
+                        applePay:
+                          state: 421c000b-5db2-4651-bd6e-4178438e7486
+                  summary:
+                    description: Total authorized/settled/refunded transactions.
+                    type: object
+                    required:
+                    - authorized
+                    - settled
+                    - refunded
+                    properties:
+                      authorized:
+                        description: Total authorized transaction.
+                        type: number
+                        example: 123.45
+                      settled:
+                        description: Total settled transaction.
+                        type: number
+                        example: 123.45
+                      refunded:
+                        description: Total refunded transaction.
+                        type: number
+                        example: 123.45
+                    example:
+                      authorized: 123.45
+                      settled: 123.45
+                      refunded: 123.45
+                  transactions:
+                    description: List of transactions in descending order from when they were received
+                    type: array
+                    items:
+                      description: Transaction type and token
+                      type: object
+                      required:
+                      - type
+                      - token
+                      - status
+                      - date
+                      properties:
+                        type:
+                          description: Transaction type.
+                          type: string
+                          example: AUTHORIZATION
+                          enum:
+                          - AUTHORIZATION
+                          - AUTHORIZATION_CLEARING
+                          - REFUND
+                          - AUTHORIZATION_REVERSAL
+                          - CHARGEBACK
+                          - CHARGEBACK_REVERSAL
+                        token:
+                          description: Transaction token.
+                          type: string
+                          example: 12345adsv9n2
+                        status:
+                          description: Transaction status.
+                          type: string
+                          example: PENDING
+                        date:
+                          description: Transaction date.
+                          type: string
+                          format: date-time
+                          example: '2022-06-08T21:23:27Z'
+                        walletID:
+                          description: Digital wallet token ID used at checkout.  If empty, a wallet was not used at checkout.
+                          type: string
+                          format: string
+                          example: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                      example:
+                        type: AUTHORIZATION
+                        token: 12345adsv9n2
+                        status: PENDING
+                        date: '2022-06-08T21:23:27Z'
+                        walletID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                example:
+                  issuance:
+                    id: b55438f7-c616-45da-ba46-b9798e44d12e
+                    status: ISSUED
+                    scopeType: APPLICATION
+                    scopeID: 416d8d11-09f1-49a5-bc58-7c6ec908607d
+                    buyerID: e9ecc348-017d-4091-ae43-09d30065ed57
+                    programID: d6b538c2-88b6-4644-ae4c-62a52f3798cf
+                    paymentProductID: 2dd9a835-48e1-4b7f-a15d-fa5e47eca0a4
+                    tenantID: b7e4f68d-983b-4d1d-b114-9e0d87eedd0b
+                    applicationSettings:
+                      applicationID: ca9b3507-d225-496d-843e-cefcf43d4db8
+                      merchantID: 613e035a-4260-4337-9198-f273f295e222
+                      merchantLocationID: 86bdc28f-3484-404b-a2ac-f62d0d0a2ec8
+                      offerID: 53214430-7cf1-4854-931c-079f38fa6749
+                  card:
+                    cardID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                    lastFour: '0700'
+                    status: ACTIVE
+                    expiry: '2022-06-08T21:23:27Z'
+                    issuanceDate: '2022-06-01T21:23:27Z'
+                    capacity:
+                      currency: USD
+                      value: 12345
+                  wallets:
+                  - id: bc1c000b-5db2-4651-bd6e-4178438e7485
+                    type: APPLEPAY
+                    status: ACTIVE
+                    usedAtCheckout: true
+                    error: false
+                    applePay:
+                      state: 421c000b-5db2-4651-bd6e-4178438e7486
+                  summary:
+                    authorized: 0
+                    settled: 0
+                    refunded: 0
+                  transactions:
+                  - type: AUTHORIZATION
+                    token: 12345adsv9n2
+                    status: PENDING
+                    date: '2022-06-08T21:23:27Z'
+                  - type: AUTHORIZATION_CLEARING
+                    token: 183hgn2948ng294pn5g
+                    status: COMPLETION
+                    date: '2022-06-08T21:23:27Z'
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/wallet/applepay:
+    post:
+      tags:
+      - Virtual Card
+      summary: Issue a new ApplePay digital wallet token
+      description: Begins the issuance process for a new ApplePay wallet.
+      operationId: issueApplePay
+      security:
+      - bearerAuthVirtualCard:
+        - c:vc.issuance
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ApplePay issuance request
+              type: object
+              properties: {}
+              example: {}
+        description: ApplePay digital token issuance request
+        required: true
+      responses:
+        '200':
+          description: The updated issuance information.
+          content:
+            application/json:
+              schema:
+                description: Response from a digital wallet issuance request.
+                type: object
+                properties:
+                  state:
+                    description: Unique state associated with the wallet.  Added to payload if ApplePay wallet was provisioned.
+                    type: string
+                    format: uuid
+                    example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  jws:
+                    type: object
+                    required:
+                    - header
+                    - payload
+                    - protected
+                    - signature
+                    properties:
+                      header:
+                        type: object
+                        required:
+                        - kid
+                        properties:
+                          kid:
+                            type: string
+                            example: 8dc7aed4-29e3-41e4-9cdb-673a05e6615c
+                            description: The ID for the JWS Public Key of the key pair used to generate signature.
+                      protected:
+                        type: string
+                        example: "Encoding-BASE64URL(UTF8(Value)): {\n    \"alg\": \"ES256\",\n    \"cty\": \"application/credential;charset=utf-8\",\n    \"typ\": \"JOSE+JSON\"\n    \"x5t#S256\":\"2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824\"\n}"
+                        description: JWS Protected Headers, contains the Header Parameters that are integrity protected by the JWS Signature.
+                      payload:
+                        type: string
+                        example: "Encoding-BASE64URL(Value): {\n    \"jti\": \"491e392a-b03b-422d-900b-7f8e268f9718\",\n    \"lid\": \"en-US\",\n    \"iss\": \"ORG-ffffffff-abcd-1234-7890-ffffffffffff\",\n    \"sub\": \"provisioningTarget\"\n    \"aud\": \"Apple\",\n    \"exp\": 1640341542706,\n    \"iat\": 1640337942706,\n    \"cti\": \"5c4e4dea-a841-4614-8990-eb172328317a\",\n}"
+                        description: JWS payload which includes the message to be sent.
+                      signature:
+                        type: string
+                        example: 5lD1znG2DD2DytqGUcSDOwJQMYbCGDCCCiXxyhpC1zOWTH1Y6jUJFAupl0jEud9nUvw3mmpuSt6zcAE1r4yb0w
+                        description: JWS Signature
+                    example:
+                      header:
+                        kid: 8dc7aed4-29e3-41e4-9cdb-673a05e6615c
+                      payload: 'Encoding-BASE64URL(Value): {\n    \"jti\": \"491e392a-b03b-422d-900b-7f8e268f9718\",\n    \"lid\": \"en-US\",\n    \"iss\": \"ORG-ffffffff-abcd-1234-7890-ffffffffffff\",\n    \"sub\": \"provisioningTarget\"\n    \"aud\": \"Apple\",\n    \"exp\": 1640341542706,\n    \"iat\": 1640337942706,\n    \"cti\": \"5c4e4dea-a841-4614-8990-eb172328317a\",\n}'
+                      protected: 'Encoding-BASE64URL(UTF8(Value)): {\n    \"alg\": \"ES256\",\n    \"cty\": \"application/credential;charset=utf-8\",\n    \"typ\": \"JOSE+JSON\"\n    \"x5t#S256\":\"2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824\"\n}'
+                      signature: 5lD1znG2DD2DytqGUcSDOwJQMYbCGDCCCiXxyhpC1zOWTH1Y6jUJFAupl0jEud9nUvw3mmpuSt6zcAE1r4yb0w
+                example:
+                  state: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  jws:
+                    header:
+                      kid: 8dc7aed4-29e3-41e4-9cdb-673a05e6615c
+                    payload: 'Encoding-BASE64URL(Value): {\n    \"jti\": \"491e392a-b03b-422d-900b-7f8e268f9718\",\n    \"lid\": \"en-US\",\n    \"iss\": \"ORG-ffffffff-abcd-1234-7890-ffffffffffff\",\n    \"sub\": \"provisioningTarget\"\n    \"aud\": \"Apple\",\n    \"exp\": 1640341542706,\n    \"iat\": 1640337942706,\n    \"cti\": \"5c4e4dea-a841-4614-8990-eb172328317a\",\n}'
+                    protected: 'Encoding-BASE64URL(UTF8(Value)): {\n    \"alg\": \"ES256\",\n    \"cty\": \"application/credential;charset=utf-8\",\n    \"typ\": \"JOSE+JSON\"\n    \"x5t#S256\":\"2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824\"\n}'
+                    signature: 5lD1znG2DD2DytqGUcSDOwJQMYbCGDCCCiXxyhpC1zOWTH1Y6jUJFAupl0jEud9nUvw3mmpuSt6zcAE1r4yb0w
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/wallet/googlepay:
+    post:
+      tags:
+      - Virtual Card
+      summary: Issue a new GooglePay digital wallet token
+      description: Begins the issuance process for a new GooglePay wallet.
+      operationId: issueGooglePay
+      security:
+      - bearerAuthVirtualCard:
+        - c:vc.issuance
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: GooglePay issuance request
+              type: object
+              required:
+              - serverSessionId
+              - clientSessionId
+              - tokenSetting
+              - cardSetting
+              - publicWalletId
+              - publicDeviceId
+              - integratorId
+              properties:
+                serverSessionId:
+                  type: string
+                  example: 8c84fab9-889c-4cb7-a330-accac5799ea5
+                  description: A string that identifies the backend session. Provided by Google pay backend.
+                clientSessionId:
+                  type: string
+                  example: 5855opl9-abcc-4cb7-a330-xyze5799ea5
+                  description: A string that identifies the client session. Provided by Google pay backend.
+                tokenSetting:
+                  type: integer
+                  format: int32
+                  example: 0
+                  description: 1 => Tokenization will be attempted.; 0 => Tokenization will not be attempted.
+                  enum:
+                  - 0
+                  - 1
+                cardSetting:
+                  type: integer
+                  format: int32
+                  example: 0
+                  description: 1 => FPAN save will be attempted.; 0 => FPAN save will not be attempted.
+                  enum:
+                  - 0
+                  - 1
+                publicWalletId:
+                  type: string
+                  example: 5855opl9-abcc-4cb7-a330-xyze5799ea5
+                  description: String identifying the device-scoped Google Pay wallet that will receive the token. Provided by Google Pay backend.
+                publicDeviceId:
+                  type: string
+                  example: 5855opl9-abcc-4cb7-a330-xyze5799ea5
+                  description: String identifying the Android device that will receive the token. Provided by Google Pay backend
+                integratorId:
+                  type: string
+                  example: ACMEISSUER_1
+                  description: A Google-assigned string that uniquely identifies both the integrator that is initiating the session and the issuer of the payment card.
+              example:
+                serverSessionId: 8c84fab9-889c-4cb7-a330-accac5799ea5
+                clientSessionId: 5855opl9-abcc-4cb7-a330-xyze5799ea5
+                tokenSetting: 1
+                cardSetting: 1
+                publicWalletId: 5855opl9-abcc-4cb7-a330-xyze5799ea5
+                publicDeviceId: 5855opl9-abcc-4cb7-a330-xyze5799ea5
+                integratorId: ACMEISSUER_1
+        description: GooglePay digital token issuance request
+        required: true
+      responses:
+        '200':
+          description: The updated issuance information.
+          content:
+            application/json:
+              schema:
+                description: Response from a digital wallet issuance request.
+                type: object
+                properties:
+                  state:
+                    description: Unique state associated with the wallet.  Added to payload if ApplePay wallet was provisioned.
+                    type: string
+                    format: uuid
+                    example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  jws:
+                    type: object
+                    required:
+                    - header
+                    - payload
+                    - protected
+                    - signature
+                    properties:
+                      header:
+                        type: object
+                        required:
+                        - kid
+                        properties:
+                          kid:
+                            type: string
+                            example: 8dc7aed4-29e3-41e4-9cdb-673a05e6615c
+                            description: The ID for the JWS Public Key of the key pair used to generate signature.
+                      protected:
+                        type: string
+                        example: "Encoding-BASE64URL(UTF8(Value)): {\n    \"alg\": \"ES256\",\n    \"cty\": \"application/credential;charset=utf-8\",\n    \"typ\": \"JOSE+JSON\"\n    \"x5t#S256\":\"2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824\"\n}"
+                        description: JWS Protected Headers, contains the Header Parameters that are integrity protected by the JWS Signature.
+                      payload:
+                        type: string
+                        example: "Encoding-BASE64URL(Value): {\n    \"jti\": \"491e392a-b03b-422d-900b-7f8e268f9718\",\n    \"lid\": \"en-US\",\n    \"iss\": \"ORG-ffffffff-abcd-1234-7890-ffffffffffff\",\n    \"sub\": \"provisioningTarget\"\n    \"aud\": \"Apple\",\n    \"exp\": 1640341542706,\n    \"iat\": 1640337942706,\n    \"cti\": \"5c4e4dea-a841-4614-8990-eb172328317a\",\n}"
+                        description: JWS payload which includes the message to be sent.
+                      signature:
+                        type: string
+                        example: 5lD1znG2DD2DytqGUcSDOwJQMYbCGDCCCiXxyhpC1zOWTH1Y6jUJFAupl0jEud9nUvw3mmpuSt6zcAE1r4yb0w
+                        description: JWS Signature
+                    example:
+                      header:
+                        kid: 8dc7aed4-29e3-41e4-9cdb-673a05e6615c
+                      payload: 'Encoding-BASE64URL(Value): {\n    \"jti\": \"491e392a-b03b-422d-900b-7f8e268f9718\",\n    \"lid\": \"en-US\",\n    \"iss\": \"ORG-ffffffff-abcd-1234-7890-ffffffffffff\",\n    \"sub\": \"provisioningTarget\"\n    \"aud\": \"Apple\",\n    \"exp\": 1640341542706,\n    \"iat\": 1640337942706,\n    \"cti\": \"5c4e4dea-a841-4614-8990-eb172328317a\",\n}'
+                      protected: 'Encoding-BASE64URL(UTF8(Value)): {\n    \"alg\": \"ES256\",\n    \"cty\": \"application/credential;charset=utf-8\",\n    \"typ\": \"JOSE+JSON\"\n    \"x5t#S256\":\"2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824\"\n}'
+                      signature: 5lD1znG2DD2DytqGUcSDOwJQMYbCGDCCCiXxyhpC1zOWTH1Y6jUJFAupl0jEud9nUvw3mmpuSt6zcAE1r4yb0w
+                example:
+                  state: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  jws:
+                    header:
+                      kid: 8dc7aed4-29e3-41e4-9cdb-673a05e6615c
+                    payload: 'Encoding-BASE64URL(Value): {\n    \"jti\": \"491e392a-b03b-422d-900b-7f8e268f9718\",\n    \"lid\": \"en-US\",\n    \"iss\": \"ORG-ffffffff-abcd-1234-7890-ffffffffffff\",\n    \"sub\": \"provisioningTarget\"\n    \"aud\": \"Apple\",\n    \"exp\": 1640341542706,\n    \"iat\": 1640337942706,\n    \"cti\": \"5c4e4dea-a841-4614-8990-eb172328317a\",\n}'
+                    protected: 'Encoding-BASE64URL(UTF8(Value)): {\n    \"alg\": \"ES256\",\n    \"cty\": \"application/credential;charset=utf-8\",\n    \"typ\": \"JOSE+JSON\"\n    \"x5t#S256\":\"2CF24DBA5FB0A30E26E83B2AC5B9E29E1B161E5C1FA7425E73043362938B9824\"\n}'
+                    signature: 5lD1znG2DD2DytqGUcSDOwJQMYbCGDCCCiXxyhpC1zOWTH1Y6jUJFAupl0jEud9nUvw3mmpuSt6zcAE1r4yb0w
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}:
+    get:
+      tags:
+      - Virtual Card
+      summary: Get issuance
+      description: Retrieve info for the specified issuance.
+      operationId: getIssuance
+      security:
+      - bearerAuthVirtualCard:
+        - r:vc.issuance
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      - description: Additional include data
+        name: include
+        in: query
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          enum:
+          - SUMMARY
+          - TRANSACTIONS
+          - LEDGER
+        example: TRANSACTIONS
+      responses:
+        '200':
+          description: The updated issuance information.
+          content:
+            application/json:
+              schema:
+                description: Information on the current issuance.
+                type: object
+                required:
+                - issuance
+                properties:
+                  issuance:
+                    description: Issuance data
+                    type: object
+                    required:
+                    - id
+                    - status
+                    - scopeType
+                    - scopeID
+                    properties:
+                      id:
+                        description: Issuance id
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      status:
+                        description: 'Provisioning status of the issuance.
+
+                          `REQUESTED` represents a requested but not yet issued card.
+
+                          `PROCESSING` represents a provisioning issuance.
+
+                          `ISSUED` represents a provisioned issuance.
+
+                          `FAILED` represents an issuance that failed to provision.
+
+                          `CLOSED` represents an issuance that has gone through checkout and can no longer be modified.'
+                        type: string
+                        enum:
+                        - REQUESTED
+                        - PROCESSING
+                        - ISSUED
+                        - FAILED
+                        - CLOSED
+                        example: ISSUED
+                      scopeType:
+                        description: Scope type of the issuance.
+                        type: string
+                        enum:
+                        - APPLICATION
+                        - MERCHANT
+                        example: APPLICATION
+                      scopeID:
+                        description: Scope ID for the issuance.  In the case of APPLICATION scopeType, scopeID will be application ID.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      buyerID:
+                        description: Buyer ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      programID:
+                        description: Program ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      tenantID:
+                        description: Tenant ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      paymentProductID:
+                        description: Payment Product ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      applicationSettings:
+                        description: Issuance data required for creating a virtual card
+                        type: object
+                        required:
+                        - applicationID
+                        properties:
+                          applicationID:
+                            description: ID of the application associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          merchantID:
+                            description: ID of the merchant associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          merchantLocationID:
+                            description: ID of the merchant location associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          offerID:
+                            description: ID of the offer associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          posCheckoutCapability:
+                            type: array
+                            description: Array of checkout options that are available at point of sale
+                            items:
+                              type: string
+                              enum:
+                              - TapToPay
+                              - KeyEntry
+                            example:
+                            - TapToPay
+                            - KeyEntry
+                        example:
+                          applicationID: ca9b3507-d225-496d-843e-cefcf43d4db8
+                          merchantID: 613e035a-4260-4337-9198-f273f295e222
+                          merchantLocationID: 86bdc28f-3484-404b-a2ac-f62d0d0a2ec8
+                          offerID: 53214430-7cf1-4854-931c-079f38fa6749
+                    example:
+                      id: b55438f7-c616-45da-ba46-a9798e44d12e
+                      status: ISSUED
+                      scopeType: APPLICATION
+                      scopeID: 416d8d11-09f1-49a5-bc58-7c6ec908607d
+                      buyerID: e9ecc348-017d-4091-ae43-09d30065ed57
+                      programID: d6b538c2-88b6-4644-ae4c-62a52f3798cf
+                      paymentProductID: 2dd9a835-48e1-4b7f-a15d-fa5e47eca0a4
+                      tenantID: b7e4f68d-983b-4d1d-b114-9e0d87eedd0b
+                      applicationSettings:
+                        applicationID: ca9b3507-d225-496d-843e-cefcf43d4db8
+                        merchantID: 613e035a-4260-4337-9198-f273f295e222
+                        merchantLocationID: 86bdc28f-3484-404b-a2ac-f62d0d0a2ec8
+                        offerID: 53214430-7cf1-4854-931c-079f38fa6749
+                  card:
+                    description: Card information
+                    type: object
+                    required:
+                    - cardID
+                    - status
+                    properties:
+                      cardToken:
+                        description: Card token.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      cardID:
+                        description: Card id.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      lastFour:
+                        description: Last 4 digits of the card number.  Added once card is provisioned.
+                        type: string
+                        example: '1234'
+                      status:
+                        description: "Provisioning status of a virtual card.\n`ACTIVE` represents a provisioned card.\n`FAILED` represents a card that failed provisioning.\n`SUSPENDED` represents a suspended card.  Can be reinstated.\n`TERMINATED` represents a terminated card.  Cannot be reinstated. \n`NOT_CREATED` represents initial state of the card which has not been created in the vendor yet."
+                        type: string
+                        enum:
+                        - ACTIVE
+                        - FAILED
+                        - SUSPENDED
+                        - TERMINATED
+                        - NOT_CREATED
+                        example: ACTIVE
+                      expiry:
+                        description: Expiration datetime. Added once card is provisioned.
+                        type: string
+                        format: date-time
+                        example: '2022-06-08T21:23:27Z'
+                      issuanceDate:
+                        description: Issuance datetime. Added once card is provisioned.
+                        type: string
+                        format: date-time
+                        example: '2022-06-01T21:23:27Z'
+                      pan:
+                        description: Card PAN.  Only available with r:vc.restricted scope.
+                        type: string
+                        example: '1234567812345678'
+                      cvv:
+                        description: Card CVV.  Only available with r:vc.restricted scope.
+                        type: string
+                        example: '123'
+                      capacity:
+                        required:
+                        - currency
+                        - value
+                        properties:
+                          currency:
+                            type: string
+                            description: The three letter currency code as defined in ISO 4217.
+                            example: USD
+                            minLength: 3
+                            maxLength: 3
+                            externalDocs:
+                              description: ISO 4217
+                              url: https://en.wikipedia.org/wiki/ISO_4217
+                          value:
+                            type: integer
+                            description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                            format: int64
+                            example: 100
+                        description: Represents a monetary amount in the specified currency
+                        example:
+                          currency: USD
+                          value: 50000
+                      card_type:
+                        description: SINGLE_USE or MULTI_USE
+                        type: string
+                        enum:
+                        - SINGLE_USE
+                        - MULTI_USE
+                        example: SINGLE_USE
+                    example:
+                      cardID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                      lastFour: '0700'
+                      status: ACTIVE
+                      expiry: '2022-06-08T21:23:27Z'
+                      issuanceDate: '2022-06-01T21:23:27Z'
+                      capacity:
+                        currency: USD
+                        value: 12345
+                      card_type: SINGLE_USE
+                  wallets:
+                    description: Wallets associated with the virtual card.
+                    type: array
+                    items:
+                      description: Wallet information
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - status
+                      - usedAtCheckout
+                      - error
+                      properties:
+                        id:
+                          description: Wallet id.
+                          type: string
+                          format: uuid
+                          example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                        type:
+                          description: Type of wallet.
+                          type: string
+                          enum:
+                          - APPLEPAY
+                          - GOOGLEPAY
+                          example: GOOGLEPAY
+                        status:
+                          description: 'Provisioning status of a digital wallet token.
+
+                            `PROVISIONING` represents a digital wallet token in the process of provisioning.
+
+                            `ACTIVE` represents a successfully provisioned digital wallet token.
+
+                            `FAILED` represents a digital wallet token that failed provisioning.
+
+                            `SUSPENDED` represents a suspended digital wallet token.  Can be reinstated.
+
+                            `TERMINATED` represents a terminated digital wallet token.  Cannot be reinstated.'
+                          type: string
+                          enum:
+                          - PROVISIONING
+                          - ACTIVE
+                          - FAILED
+                          - SUSPENDED
+                          - TERMINATED
+                          example: ACTIVE
+                        dpan:
+                          description: Wallet DPAN.  Only available with r:vc.restricted scope.
+                          type: string
+                          example: '1234567812345678'
+                        usedAtCheckout:
+                          description: True if this wallet was used for checkout.
+                          type: boolean
+                          example: true
+                        error:
+                          description: True if this wallet has an error state.
+                          type: boolean
+                          example: true
+                        applePay:
+                          description: ApplePay wallet information
+                          type: object
+                          required:
+                          - state
+                          properties:
+                            state:
+                              description: Unique state associated with the wallet.
+                              type: string
+                              format: uuid
+                              example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          example:
+                            state: 421c000b-5db2-4651-bd6e-4178438e7486
+                        googlePay:
+                          description: GooglePay wallet information
+                          type: object
+                          required:
+                          - publicWalletId
+                          - publicDeviceId
+                          properties:
+                            publicWalletId:
+                              description: GooglePay public wallet id
+                              type: string
+                              example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                            publicDeviceId:
+                              description: GooglePay public device id
+                              type: string
+                              example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                          example:
+                            publicWalletId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                            publicDeviceId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                      example:
+                        id: bc1c000b-5db2-4651-bd6e-4178438e7485
+                        type: APPLEPAY
+                        status: ACTIVE
+                        dpan: '1234567812345678'
+                        usedAtCheckout: true
+                        error: false
+                        applePay:
+                          state: 421c000b-5db2-4651-bd6e-4178438e7486
+                  summary:
+                    description: Total authorized/settled/refunded transactions.
+                    type: object
+                    required:
+                    - authorized
+                    - settled
+                    - refunded
+                    properties:
+                      authorized:
+                        description: Total authorized transaction.
+                        type: number
+                        example: 123.45
+                      settled:
+                        description: Total settled transaction.
+                        type: number
+                        example: 123.45
+                      refunded:
+                        description: Total refunded transaction.
+                        type: number
+                        example: 123.45
+                    example:
+                      authorized: 123.45
+                      settled: 123.45
+                      refunded: 123.45
+                  transactions:
+                    description: List of transactions in descending order from when they were received
+                    type: array
+                    items:
+                      description: Transaction type and token
+                      type: object
+                      required:
+                      - type
+                      - token
+                      - status
+                      - date
+                      properties:
+                        type:
+                          description: Transaction type.
+                          type: string
+                          example: AUTHORIZATION
+                          enum:
+                          - AUTHORIZATION
+                          - AUTHORIZATION_CLEARING
+                          - REFUND
+                          - AUTHORIZATION_REVERSAL
+                          - CHARGEBACK
+                          - CHARGEBACK_REVERSAL
+                        token:
+                          description: Transaction token.
+                          type: string
+                          example: 12345adsv9n2
+                        status:
+                          description: Transaction status.
+                          type: string
+                          example: PENDING
+                        date:
+                          description: Transaction date.
+                          type: string
+                          format: date-time
+                          example: '2022-06-08T21:23:27Z'
+                        walletID:
+                          description: Digital wallet token ID used at checkout.  If empty, a wallet was not used at checkout.
+                          type: string
+                          format: string
+                          example: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                      example:
+                        type: AUTHORIZATION
+                        token: 12345adsv9n2
+                        status: PENDING
+                        date: '2022-06-08T21:23:27Z'
+                        walletID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                example:
+                  issuance:
+                    id: b55438f7-c616-45da-ba46-b9798e44d12e
+                    status: ISSUED
+                    scopeType: APPLICATION
+                    scopeID: 416d8d11-09f1-49a5-bc58-7c6ec908607d
+                    buyerID: e9ecc348-017d-4091-ae43-09d30065ed57
+                    programID: d6b538c2-88b6-4644-ae4c-62a52f3798cf
+                    paymentProductID: 2dd9a835-48e1-4b7f-a15d-fa5e47eca0a4
+                    tenantID: b7e4f68d-983b-4d1d-b114-9e0d87eedd0b
+                    applicationSettings:
+                      applicationID: ca9b3507-d225-496d-843e-cefcf43d4db8
+                      merchantID: 613e035a-4260-4337-9198-f273f295e222
+                      merchantLocationID: 86bdc28f-3484-404b-a2ac-f62d0d0a2ec8
+                      offerID: 53214430-7cf1-4854-931c-079f38fa6749
+                  card:
+                    cardID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                    lastFour: '0700'
+                    status: ACTIVE
+                    expiry: '2022-06-08T21:23:27Z'
+                    issuanceDate: '2022-06-01T21:23:27Z'
+                    capacity:
+                      currency: USD
+                      value: 12345
+                  wallets:
+                  - id: bc1c000b-5db2-4651-bd6e-4178438e7485
+                    type: APPLEPAY
+                    status: ACTIVE
+                    usedAtCheckout: true
+                    error: false
+                    applePay:
+                      state: 421c000b-5db2-4651-bd6e-4178438e7486
+                  summary:
+                    authorized: 0
+                    settled: 0
+                    refunded: 0
+                  transactions:
+                  - type: AUTHORIZATION
+                    token: 12345adsv9n2
+                    status: PENDING
+                    date: '2022-06-08T21:23:27Z'
+                  - type: AUTHORIZATION_CLEARING
+                    token: 183hgn2948ng294pn5g
+                    status: COMPLETION
+                    date: '2022-06-08T21:23:27Z'
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/card:
+    get:
+      tags:
+      - Virtual Card
+      summary: Get issuance card
+      description: Retrieve card info for the specified issuance.
+      operationId: getIssuanceCard
+      security:
+      - bearerAuthVirtualCard:
+        - r:vc.issuance
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      responses:
+        '200':
+          description: The card information associated with lookupKey.
+          content:
+            application/json:
+              schema:
+                description: Card information
+                type: object
+                required:
+                - cardID
+                - status
+                properties:
+                  cardToken:
+                    description: Card token.
+                    type: string
+                    format: uuid
+                    example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  cardID:
+                    description: Card id.
+                    type: string
+                    format: uuid
+                    example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  lastFour:
+                    description: Last 4 digits of the card number.  Added once card is provisioned.
+                    type: string
+                    example: '1234'
+                  status:
+                    description: "Provisioning status of a virtual card.\n`ACTIVE` represents a provisioned card.\n`FAILED` represents a card that failed provisioning.\n`SUSPENDED` represents a suspended card.  Can be reinstated.\n`TERMINATED` represents a terminated card.  Cannot be reinstated. \n`NOT_CREATED` represents initial state of the card which has not been created in the vendor yet."
+                    type: string
+                    enum:
+                    - ACTIVE
+                    - FAILED
+                    - SUSPENDED
+                    - TERMINATED
+                    - NOT_CREATED
+                    example: ACTIVE
+                  expiry:
+                    description: Expiration datetime. Added once card is provisioned.
+                    type: string
+                    format: date-time
+                    example: '2022-06-08T21:23:27Z'
+                  issuanceDate:
+                    description: Issuance datetime. Added once card is provisioned.
+                    type: string
+                    format: date-time
+                    example: '2022-06-01T21:23:27Z'
+                  pan:
+                    description: Card PAN.  Only available with r:vc.restricted scope.
+                    type: string
+                    example: '1234567812345678'
+                  cvv:
+                    description: Card CVV.  Only available with r:vc.restricted scope.
+                    type: string
+                    example: '123'
+                  capacity:
+                    required:
+                    - currency
+                    - value
+                    properties:
+                      currency:
+                        type: string
+                        description: The three letter currency code as defined in ISO 4217.
+                        example: USD
+                        minLength: 3
+                        maxLength: 3
+                        externalDocs:
+                          description: ISO 4217
+                          url: https://en.wikipedia.org/wiki/ISO_4217
+                      value:
+                        type: integer
+                        description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                        format: int64
+                        example: 100
+                    description: Represents a monetary amount in the specified currency
+                    example:
+                      currency: USD
+                      value: 50000
+                  card_type:
+                    description: SINGLE_USE or MULTI_USE
+                    type: string
+                    enum:
+                    - SINGLE_USE
+                    - MULTI_USE
+                    example: SINGLE_USE
+                example:
+                  cardID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                  lastFour: '0700'
+                  status: ACTIVE
+                  expiry: '2022-06-08T21:23:27Z'
+                  issuanceDate: '2022-06-01T21:23:27Z'
+                  capacity:
+                    currency: USD
+                    value: 12345
+                  card_type: SINGLE_USE
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/card/pan:
+    get:
+      tags:
+      - Virtual Card
+      summary: Get issuance card with PAN and CVV
+      description: Retrieve card info for the specified issuance with PAN and CVV.
+      operationId: getIssuanceCardPan
+      security:
+      - bearerAuthVirtualCard:
+        - r:vc.restricted
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      responses:
+        '200':
+          description: The card information with PAN and CVV associated with lookupKey.
+          content:
+            application/json:
+              schema:
+                description: Card information
+                type: object
+                required:
+                - cardID
+                - status
+                properties:
+                  cardToken:
+                    description: Card token.
+                    type: string
+                    format: uuid
+                    example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  cardID:
+                    description: Card id.
+                    type: string
+                    format: uuid
+                    example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  lastFour:
+                    description: Last 4 digits of the card number.  Added once card is provisioned.
+                    type: string
+                    example: '1234'
+                  status:
+                    description: "Provisioning status of a virtual card.\n`ACTIVE` represents a provisioned card.\n`FAILED` represents a card that failed provisioning.\n`SUSPENDED` represents a suspended card.  Can be reinstated.\n`TERMINATED` represents a terminated card.  Cannot be reinstated. \n`NOT_CREATED` represents initial state of the card which has not been created in the vendor yet."
+                    type: string
+                    enum:
+                    - ACTIVE
+                    - FAILED
+                    - SUSPENDED
+                    - TERMINATED
+                    - NOT_CREATED
+                    example: ACTIVE
+                  expiry:
+                    description: Expiration datetime. Added once card is provisioned.
+                    type: string
+                    format: date-time
+                    example: '2022-06-08T21:23:27Z'
+                  issuanceDate:
+                    description: Issuance datetime. Added once card is provisioned.
+                    type: string
+                    format: date-time
+                    example: '2022-06-01T21:23:27Z'
+                  pan:
+                    description: Card PAN.  Only available with r:vc.restricted scope.
+                    type: string
+                    example: '1234567812345678'
+                  cvv:
+                    description: Card CVV.  Only available with r:vc.restricted scope.
+                    type: string
+                    example: '123'
+                  capacity:
+                    required:
+                    - currency
+                    - value
+                    properties:
+                      currency:
+                        type: string
+                        description: The three letter currency code as defined in ISO 4217.
+                        example: USD
+                        minLength: 3
+                        maxLength: 3
+                        externalDocs:
+                          description: ISO 4217
+                          url: https://en.wikipedia.org/wiki/ISO_4217
+                      value:
+                        type: integer
+                        description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                        format: int64
+                        example: 100
+                    description: Represents a monetary amount in the specified currency
+                    example:
+                      currency: USD
+                      value: 50000
+                  card_type:
+                    description: SINGLE_USE or MULTI_USE
+                    type: string
+                    enum:
+                    - SINGLE_USE
+                    - MULTI_USE
+                    example: SINGLE_USE
+                example:
+                  cardID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                  lastFour: '0700'
+                  status: ACTIVE
+                  expiry: '2022-06-08T21:23:27Z'
+                  issuanceDate: '2022-06-01T21:23:27Z'
+                  capacity:
+                    currency: USD
+                    value: 12345
+                  card_type: SINGLE_USE
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/card/{cardId}/reprovision:
+    post:
+      tags:
+      - Virtual Card
+      summary: Reprovision a card
+      description: Deactivates existing card and issues a new one using the same lookup key. Used when a card is lost, stolen or other reasons.
+      operationId: reprovisionVirtualCard
+      security:
+      - bearerAuthVirtualCard:
+        - c:vc.issuance
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      - description: Card ID
+        name: cardId
+        in: path
+        required: true
+        schema:
+          type: string
+        example: 970243f5-f23c-4a51-8b9b-b781e549b75f
+      responses:
+        '201':
+          description: The updated issuance information.
+          content:
+            application/json:
+              schema:
+                description: Information on the current issuance.
+                type: object
+                required:
+                - issuance
+                properties:
+                  issuance:
+                    description: Issuance data
+                    type: object
+                    required:
+                    - id
+                    - status
+                    - scopeType
+                    - scopeID
+                    properties:
+                      id:
+                        description: Issuance id
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      status:
+                        description: 'Provisioning status of the issuance.
+
+                          `REQUESTED` represents a requested but not yet issued card.
+
+                          `PROCESSING` represents a provisioning issuance.
+
+                          `ISSUED` represents a provisioned issuance.
+
+                          `FAILED` represents an issuance that failed to provision.
+
+                          `CLOSED` represents an issuance that has gone through checkout and can no longer be modified.'
+                        type: string
+                        enum:
+                        - REQUESTED
+                        - PROCESSING
+                        - ISSUED
+                        - FAILED
+                        - CLOSED
+                        example: ISSUED
+                      scopeType:
+                        description: Scope type of the issuance.
+                        type: string
+                        enum:
+                        - APPLICATION
+                        - MERCHANT
+                        example: APPLICATION
+                      scopeID:
+                        description: Scope ID for the issuance.  In the case of APPLICATION scopeType, scopeID will be application ID.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      buyerID:
+                        description: Buyer ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      programID:
+                        description: Program ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      tenantID:
+                        description: Tenant ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      paymentProductID:
+                        description: Payment Product ID for the issuance.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      applicationSettings:
+                        description: Issuance data required for creating a virtual card
+                        type: object
+                        required:
+                        - applicationID
+                        properties:
+                          applicationID:
+                            description: ID of the application associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          merchantID:
+                            description: ID of the merchant associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          merchantLocationID:
+                            description: ID of the merchant location associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          offerID:
+                            description: ID of the offer associated with this in-store issuance.
+                            type: string
+                            format: uuid
+                            example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          posCheckoutCapability:
+                            type: array
+                            description: Array of checkout options that are available at point of sale
+                            items:
+                              type: string
+                              enum:
+                              - TapToPay
+                              - KeyEntry
+                            example:
+                            - TapToPay
+                            - KeyEntry
+                        example:
+                          applicationID: ca9b3507-d225-496d-843e-cefcf43d4db8
+                          merchantID: 613e035a-4260-4337-9198-f273f295e222
+                          merchantLocationID: 86bdc28f-3484-404b-a2ac-f62d0d0a2ec8
+                          offerID: 53214430-7cf1-4854-931c-079f38fa6749
+                    example:
+                      id: b55438f7-c616-45da-ba46-a9798e44d12e
+                      status: ISSUED
+                      scopeType: APPLICATION
+                      scopeID: 416d8d11-09f1-49a5-bc58-7c6ec908607d
+                      buyerID: e9ecc348-017d-4091-ae43-09d30065ed57
+                      programID: d6b538c2-88b6-4644-ae4c-62a52f3798cf
+                      paymentProductID: 2dd9a835-48e1-4b7f-a15d-fa5e47eca0a4
+                      tenantID: b7e4f68d-983b-4d1d-b114-9e0d87eedd0b
+                      applicationSettings:
+                        applicationID: ca9b3507-d225-496d-843e-cefcf43d4db8
+                        merchantID: 613e035a-4260-4337-9198-f273f295e222
+                        merchantLocationID: 86bdc28f-3484-404b-a2ac-f62d0d0a2ec8
+                        offerID: 53214430-7cf1-4854-931c-079f38fa6749
+                  card:
+                    description: Card information
+                    type: object
+                    required:
+                    - cardID
+                    - status
+                    properties:
+                      cardToken:
+                        description: Card token.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      cardID:
+                        description: Card id.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                      lastFour:
+                        description: Last 4 digits of the card number.  Added once card is provisioned.
+                        type: string
+                        example: '1234'
+                      status:
+                        description: "Provisioning status of a virtual card.\n`ACTIVE` represents a provisioned card.\n`FAILED` represents a card that failed provisioning.\n`SUSPENDED` represents a suspended card.  Can be reinstated.\n`TERMINATED` represents a terminated card.  Cannot be reinstated. \n`NOT_CREATED` represents initial state of the card which has not been created in the vendor yet."
+                        type: string
+                        enum:
+                        - ACTIVE
+                        - FAILED
+                        - SUSPENDED
+                        - TERMINATED
+                        - NOT_CREATED
+                        example: ACTIVE
+                      expiry:
+                        description: Expiration datetime. Added once card is provisioned.
+                        type: string
+                        format: date-time
+                        example: '2022-06-08T21:23:27Z'
+                      issuanceDate:
+                        description: Issuance datetime. Added once card is provisioned.
+                        type: string
+                        format: date-time
+                        example: '2022-06-01T21:23:27Z'
+                      pan:
+                        description: Card PAN.  Only available with r:vc.restricted scope.
+                        type: string
+                        example: '1234567812345678'
+                      cvv:
+                        description: Card CVV.  Only available with r:vc.restricted scope.
+                        type: string
+                        example: '123'
+                      capacity:
+                        required:
+                        - currency
+                        - value
+                        properties:
+                          currency:
+                            type: string
+                            description: The three letter currency code as defined in ISO 4217.
+                            example: USD
+                            minLength: 3
+                            maxLength: 3
+                            externalDocs:
+                              description: ISO 4217
+                              url: https://en.wikipedia.org/wiki/ISO_4217
+                          value:
+                            type: integer
+                            description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                            format: int64
+                            example: 100
+                        description: Represents a monetary amount in the specified currency
+                        example:
+                          currency: USD
+                          value: 50000
+                      card_type:
+                        description: SINGLE_USE or MULTI_USE
+                        type: string
+                        enum:
+                        - SINGLE_USE
+                        - MULTI_USE
+                        example: SINGLE_USE
+                    example:
+                      cardID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                      lastFour: '0700'
+                      status: ACTIVE
+                      expiry: '2022-06-08T21:23:27Z'
+                      issuanceDate: '2022-06-01T21:23:27Z'
+                      capacity:
+                        currency: USD
+                        value: 12345
+                      card_type: SINGLE_USE
+                  wallets:
+                    description: Wallets associated with the virtual card.
+                    type: array
+                    items:
+                      description: Wallet information
+                      type: object
+                      required:
+                      - id
+                      - type
+                      - status
+                      - usedAtCheckout
+                      - error
+                      properties:
+                        id:
+                          description: Wallet id.
+                          type: string
+                          format: uuid
+                          example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                        type:
+                          description: Type of wallet.
+                          type: string
+                          enum:
+                          - APPLEPAY
+                          - GOOGLEPAY
+                          example: GOOGLEPAY
+                        status:
+                          description: 'Provisioning status of a digital wallet token.
+
+                            `PROVISIONING` represents a digital wallet token in the process of provisioning.
+
+                            `ACTIVE` represents a successfully provisioned digital wallet token.
+
+                            `FAILED` represents a digital wallet token that failed provisioning.
+
+                            `SUSPENDED` represents a suspended digital wallet token.  Can be reinstated.
+
+                            `TERMINATED` represents a terminated digital wallet token.  Cannot be reinstated.'
+                          type: string
+                          enum:
+                          - PROVISIONING
+                          - ACTIVE
+                          - FAILED
+                          - SUSPENDED
+                          - TERMINATED
+                          example: ACTIVE
+                        dpan:
+                          description: Wallet DPAN.  Only available with r:vc.restricted scope.
+                          type: string
+                          example: '1234567812345678'
+                        usedAtCheckout:
+                          description: True if this wallet was used for checkout.
+                          type: boolean
+                          example: true
+                        error:
+                          description: True if this wallet has an error state.
+                          type: boolean
+                          example: true
+                        applePay:
+                          description: ApplePay wallet information
+                          type: object
+                          required:
+                          - state
+                          properties:
+                            state:
+                              description: Unique state associated with the wallet.
+                              type: string
+                              format: uuid
+                              example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                          example:
+                            state: 421c000b-5db2-4651-bd6e-4178438e7486
+                        googlePay:
+                          description: GooglePay wallet information
+                          type: object
+                          required:
+                          - publicWalletId
+                          - publicDeviceId
+                          properties:
+                            publicWalletId:
+                              description: GooglePay public wallet id
+                              type: string
+                              example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                            publicDeviceId:
+                              description: GooglePay public device id
+                              type: string
+                              example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                          example:
+                            publicWalletId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                            publicDeviceId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                      example:
+                        id: bc1c000b-5db2-4651-bd6e-4178438e7485
+                        type: APPLEPAY
+                        status: ACTIVE
+                        dpan: '1234567812345678'
+                        usedAtCheckout: true
+                        error: false
+                        applePay:
+                          state: 421c000b-5db2-4651-bd6e-4178438e7486
+                  summary:
+                    description: Total authorized/settled/refunded transactions.
+                    type: object
+                    required:
+                    - authorized
+                    - settled
+                    - refunded
+                    properties:
+                      authorized:
+                        description: Total authorized transaction.
+                        type: number
+                        example: 123.45
+                      settled:
+                        description: Total settled transaction.
+                        type: number
+                        example: 123.45
+                      refunded:
+                        description: Total refunded transaction.
+                        type: number
+                        example: 123.45
+                    example:
+                      authorized: 123.45
+                      settled: 123.45
+                      refunded: 123.45
+                  transactions:
+                    description: List of transactions in descending order from when they were received
+                    type: array
+                    items:
+                      description: Transaction type and token
+                      type: object
+                      required:
+                      - type
+                      - token
+                      - status
+                      - date
+                      properties:
+                        type:
+                          description: Transaction type.
+                          type: string
+                          example: AUTHORIZATION
+                          enum:
+                          - AUTHORIZATION
+                          - AUTHORIZATION_CLEARING
+                          - REFUND
+                          - AUTHORIZATION_REVERSAL
+                          - CHARGEBACK
+                          - CHARGEBACK_REVERSAL
+                        token:
+                          description: Transaction token.
+                          type: string
+                          example: 12345adsv9n2
+                        status:
+                          description: Transaction status.
+                          type: string
+                          example: PENDING
+                        date:
+                          description: Transaction date.
+                          type: string
+                          format: date-time
+                          example: '2022-06-08T21:23:27Z'
+                        walletID:
+                          description: Digital wallet token ID used at checkout.  If empty, a wallet was not used at checkout.
+                          type: string
+                          format: string
+                          example: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                      example:
+                        type: AUTHORIZATION
+                        token: 12345adsv9n2
+                        status: PENDING
+                        date: '2022-06-08T21:23:27Z'
+                        walletID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                example:
+                  issuance:
+                    id: b55438f7-c616-45da-ba46-b9798e44d12e
+                    status: ISSUED
+                    scopeType: APPLICATION
+                    scopeID: 416d8d11-09f1-49a5-bc58-7c6ec908607d
+                    buyerID: e9ecc348-017d-4091-ae43-09d30065ed57
+                    programID: d6b538c2-88b6-4644-ae4c-62a52f3798cf
+                    paymentProductID: 2dd9a835-48e1-4b7f-a15d-fa5e47eca0a4
+                    tenantID: b7e4f68d-983b-4d1d-b114-9e0d87eedd0b
+                    applicationSettings:
+                      applicationID: ca9b3507-d225-496d-843e-cefcf43d4db8
+                      merchantID: 613e035a-4260-4337-9198-f273f295e222
+                      merchantLocationID: 86bdc28f-3484-404b-a2ac-f62d0d0a2ec8
+                      offerID: 53214430-7cf1-4854-931c-079f38fa6749
+                  card:
+                    cardID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                    lastFour: '0700'
+                    status: ACTIVE
+                    expiry: '2022-06-08T21:23:27Z'
+                    issuanceDate: '2022-06-01T21:23:27Z'
+                    capacity:
+                      currency: USD
+                      value: 12345
+                  wallets:
+                  - id: bc1c000b-5db2-4651-bd6e-4178438e7485
+                    type: APPLEPAY
+                    status: ACTIVE
+                    usedAtCheckout: true
+                    error: false
+                    applePay:
+                      state: 421c000b-5db2-4651-bd6e-4178438e7486
+                  summary:
+                    authorized: 0
+                    settled: 0
+                    refunded: 0
+                  transactions:
+                  - type: AUTHORIZATION
+                    token: 12345adsv9n2
+                    status: PENDING
+                    date: '2022-06-08T21:23:27Z'
+                  - type: AUTHORIZATION_CLEARING
+                    token: 183hgn2948ng294pn5g
+                    status: COMPLETION
+                    date: '2022-06-08T21:23:27Z'
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/wallet/{walletId}:
+    get:
+      tags:
+      - Virtual Card
+      summary: Get wallet
+      description: Retrieve info for the specified wallet.
+      operationId: getWallet
+      security:
+      - bearerAuthVirtualCard:
+        - r:vc.issuance
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      - description: Wallet ID
+        name: walletId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      responses:
+        '200':
+          description: The wallet associated with walletId.
+          content:
+            application/json:
+              schema:
+                description: Wallet information
+                type: object
+                required:
+                - id
+                - type
+                - status
+                - usedAtCheckout
+                - error
+                properties:
+                  id:
+                    description: Wallet id.
+                    type: string
+                    format: uuid
+                    example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  type:
+                    description: Type of wallet.
+                    type: string
+                    enum:
+                    - APPLEPAY
+                    - GOOGLEPAY
+                    example: GOOGLEPAY
+                  status:
+                    description: 'Provisioning status of a digital wallet token.
+
+                      `PROVISIONING` represents a digital wallet token in the process of provisioning.
+
+                      `ACTIVE` represents a successfully provisioned digital wallet token.
+
+                      `FAILED` represents a digital wallet token that failed provisioning.
+
+                      `SUSPENDED` represents a suspended digital wallet token.  Can be reinstated.
+
+                      `TERMINATED` represents a terminated digital wallet token.  Cannot be reinstated.'
+                    type: string
+                    enum:
+                    - PROVISIONING
+                    - ACTIVE
+                    - FAILED
+                    - SUSPENDED
+                    - TERMINATED
+                    example: ACTIVE
+                  dpan:
+                    description: Wallet DPAN.  Only available with r:vc.restricted scope.
+                    type: string
+                    example: '1234567812345678'
+                  usedAtCheckout:
+                    description: True if this wallet was used for checkout.
+                    type: boolean
+                    example: true
+                  error:
+                    description: True if this wallet has an error state.
+                    type: boolean
+                    example: true
+                  applePay:
+                    description: ApplePay wallet information
+                    type: object
+                    required:
+                    - state
+                    properties:
+                      state:
+                        description: Unique state associated with the wallet.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                    example:
+                      state: 421c000b-5db2-4651-bd6e-4178438e7486
+                  googlePay:
+                    description: GooglePay wallet information
+                    type: object
+                    required:
+                    - publicWalletId
+                    - publicDeviceId
+                    properties:
+                      publicWalletId:
+                        description: GooglePay public wallet id
+                        type: string
+                        example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                      publicDeviceId:
+                        description: GooglePay public device id
+                        type: string
+                        example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                    example:
+                      publicWalletId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                      publicDeviceId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                example:
+                  id: bc1c000b-5db2-4651-bd6e-4178438e7485
+                  type: APPLEPAY
+                  status: ACTIVE
+                  dpan: '1234567812345678'
+                  usedAtCheckout: true
+                  error: false
+                  applePay:
+                    state: 421c000b-5db2-4651-bd6e-4178438e7486
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/wallet/{walletId}/pan:
+    get:
+      tags:
+      - Virtual Card
+      summary: Get wallet and DPAN
+      description: Retrieve info for the specified wallet with DPAN.
+      operationId: getWalletPan
+      security:
+      - bearerAuthVirtualCard:
+        - r:vc.restricted
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      - description: Wallet ID
+        name: walletId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      responses:
+        '200':
+          description: The wallet and DPAN associated with walletId.
+          content:
+            application/json:
+              schema:
+                description: Wallet information
+                type: object
+                required:
+                - id
+                - type
+                - status
+                - usedAtCheckout
+                - error
+                properties:
+                  id:
+                    description: Wallet id.
+                    type: string
+                    format: uuid
+                    example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                  type:
+                    description: Type of wallet.
+                    type: string
+                    enum:
+                    - APPLEPAY
+                    - GOOGLEPAY
+                    example: GOOGLEPAY
+                  status:
+                    description: 'Provisioning status of a digital wallet token.
+
+                      `PROVISIONING` represents a digital wallet token in the process of provisioning.
+
+                      `ACTIVE` represents a successfully provisioned digital wallet token.
+
+                      `FAILED` represents a digital wallet token that failed provisioning.
+
+                      `SUSPENDED` represents a suspended digital wallet token.  Can be reinstated.
+
+                      `TERMINATED` represents a terminated digital wallet token.  Cannot be reinstated.'
+                    type: string
+                    enum:
+                    - PROVISIONING
+                    - ACTIVE
+                    - FAILED
+                    - SUSPENDED
+                    - TERMINATED
+                    example: ACTIVE
+                  dpan:
+                    description: Wallet DPAN.  Only available with r:vc.restricted scope.
+                    type: string
+                    example: '1234567812345678'
+                  usedAtCheckout:
+                    description: True if this wallet was used for checkout.
+                    type: boolean
+                    example: true
+                  error:
+                    description: True if this wallet has an error state.
+                    type: boolean
+                    example: true
+                  applePay:
+                    description: ApplePay wallet information
+                    type: object
+                    required:
+                    - state
+                    properties:
+                      state:
+                        description: Unique state associated with the wallet.
+                        type: string
+                        format: uuid
+                        example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                    example:
+                      state: 421c000b-5db2-4651-bd6e-4178438e7486
+                  googlePay:
+                    description: GooglePay wallet information
+                    type: object
+                    required:
+                    - publicWalletId
+                    - publicDeviceId
+                    properties:
+                      publicWalletId:
+                        description: GooglePay public wallet id
+                        type: string
+                        example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                      publicDeviceId:
+                        description: GooglePay public device id
+                        type: string
+                        example: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                    example:
+                      publicWalletId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                      publicDeviceId: c28faaa0-e41e-4bf5-8158-5045e5bed8bd
+                example:
+                  id: bc1c000b-5db2-4651-bd6e-4178438e7485
+                  type: APPLEPAY
+                  status: ACTIVE
+                  dpan: '1234567812345678'
+                  usedAtCheckout: true
+                  error: false
+                  applePay:
+                    state: 421c000b-5db2-4651-bd6e-4178438e7486
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/card/status:
+    post:
+      tags:
+      - Virtual Card
+      summary: Update Issuance Status
+      description: Updating Issuance Card Status
+      operationId: updateStatus
+      security:
+      - bearerAuthVirtualCard:
+        - u:vc.issuance
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: Update issuance status request
+              type: object
+              required:
+              - status
+              properties:
+                status:
+                  type: string
+                  example: ACTIVE
+                  enum:
+                  - ACTIVE
+                  - SUSPENDED
+                  - TERMINATED
+                  description: String that identifies which status to update to
+        description: Update issuance status request
+        required: true
+      responses:
+        '200':
+          description: 200 OK Response confirming status was updated
+          content:
+            application/json:
+              schema:
+                description: "Provisioning status of a virtual card.\n`ACTIVE` represents a provisioned card.\n`FAILED` represents a card that failed provisioning.\n`SUSPENDED` represents a suspended card.  Can be reinstated.\n`TERMINATED` represents a terminated card.  Cannot be reinstated. \n`NOT_CREATED` represents initial state of the card which has not been created in the vendor yet."
+                type: string
+                enum:
+                - ACTIVE
+                - FAILED
+                - SUSPENDED
+                - TERMINATED
+                - NOT_CREATED
+                example: ACTIVE
+        '400':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/events:
+    get:
+      tags:
+      - Virtual Card
+      summary: Get Virtual Card Events
+      description: Retrieve a list of virtual card events for a given lookup key
+      operationId: getNotifications
+      security:
+      - bearerAuthVirtualCard:
+        - r:vc.issuance
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      responses:
+        '200':
+          description: 200 OK Response confirming status was updated
+          content:
+            application/json:
+              schema:
+                description: List of events that have occurred on the card
+                type: object
+                required:
+                - events
+                properties:
+                  events:
+                    type: array
+                    items:
+                      description: Transaction event that has occurred for the specific card
+                      type: object
+                      required:
+                      - type
+                      - createdAt
+                      - cardID
+                      properties:
+                        type:
+                          description: Event type
+                          type: string
+                          example: transactions.authorization
+                        createdAt:
+                          description: Event date
+                          type: string
+                          format: date-time
+                          example: '2022-06-08T21:23:27Z'
+                        cardID:
+                          description: Card id.
+                          type: string
+                          format: uuid
+                          example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                        walletID:
+                          description: Digital wallet token ID used at checkout.  If empty, a wallet was not used at checkout.
+                          type: string
+                          format: string
+                          example: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                        error:
+                          description: True if this wallet has an error state.
+                          type: boolean
+                          example: true
+                      example:
+                        type: transactions.authorization
+                        createdAt: '2022-06-08T21:23:27Z'
+                        cardID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                        walletID: 970243f5-f23c-4a51-8b9b-b781e549b75f
+                        error: false
+        '400':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+  /api/virtual-card/issuance/{lookupKey}/transaction_data:
+    get:
+      tags:
+      - Virtual Card
+      summary: Get Virtual Card Transaction Data
+      description: Retrieve a list of virtual card transaction data for a given lookup key
+      operationId: getTransactionData
+      security:
+      - bearerAuthVirtualCard:
+        - r:vc.issuance
+      parameters:
+      - description: Issuance lookup key.  Either `issuanceID` or '`scopeType`.`scopeID`'
+        name: lookupKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: APPLICATION.d8a265ce-5d9c-4d0b-9edd-401450f78e09
+      - description: Types of transaction data to include
+        name: include
+        in: query
+        required: true
+        style: form
+        explode: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - AUTHORIZATION
+            - REVERSAL
+            - SETTLEMENT
+            - REFUND
+            - CHARGEBACK
+            - CHARGEBACK_REVERSAL
+        example:
+        - AUTHORIZATION
+        - SETTLEMENT
+      - description: Include declined transactions
+        name: includeDeclinedTransactions
+        in: query
+        required: false
+        schema:
+          type: boolean
+        example: true
+      responses:
+        '200':
+          description: 200 OK Response confirming status was updated
+          content:
+            application/json:
+              schema:
+                description: List of transaction data that has occurred on the card
+                type: object
+                required:
+                - transactions
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      description: Card Acceptor data from the transaction
+                      type: object
+                      required:
+                      - transaction_id
+                      - amount
+                      - date
+                      properties:
+                        id:
+                          description: Event ID
+                          type: string
+                        transaction_id:
+                          description: Bread transaction_id
+                          type: string
+                          format: uuid
+                          example: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                        amount:
+                          required:
+                          - currency
+                          - value
+                          properties:
+                            currency:
+                              type: string
+                              description: The three letter currency code as defined in ISO 4217.
+                              example: USD
+                              minLength: 3
+                              maxLength: 3
+                              externalDocs:
+                                description: ISO 4217
+                                url: https://en.wikipedia.org/wiki/ISO_4217
+                            value:
+                              type: integer
+                              description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                              format: int64
+                              example: 100
+                          description: Represents a monetary amount in the specified currency
+                          example:
+                            currency: USD
+                            value: 50000
+                        date:
+                          description: Event date
+                          type: string
+                          format: date
+                          example: '2022-07-21'
+                        city:
+                          description: City the transaction took place it.  Optional.  Best guess based on the card acceptor data.
+                          type: string
+                          example: Minneapolis
+                        state:
+                          description: State the transaction took place it.  Optional.  Best guess based on the card acceptor data.
+                          type: string
+                          example: MN
+                        postal_code:
+                          description: Postal code the transaction took place it.  Optional.  Best guess based on the card acceptor data.
+                          type: string
+                          example: '55401'
+                        name:
+                          description: Name of the merchant.  Optional. Best guess based on the card acceptor data.
+                          type: string
+                          example: '55401'
+                        type:
+                          description: Type of transaction
+                          type: string
+                          enum:
+                          - AUTHORIZATION
+                          - REVERSAL
+                          - SETTLEMENT
+                          - REFUND
+                          - CHARGEBACK
+                          - CHARGEBACK_REVERSAL
+                          example: AUTHORIZATION
+                        running_total:
+                          required:
+                          - currency
+                          - value
+                          properties:
+                            currency:
+                              type: string
+                              description: The three letter currency code as defined in ISO 4217.
+                              example: USD
+                              minLength: 3
+                              maxLength: 3
+                              externalDocs:
+                                description: ISO 4217
+                                url: https://en.wikipedia.org/wiki/ISO_4217
+                            value:
+                              type: integer
+                              description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                              format: int64
+                              example: 100
+                          description: Represents a monetary amount in the specified currency
+                          example:
+                            currency: USD
+                            value: 50000
+                      example:
+                        transaction_id: d8a265ce-5d9c-4d0b-9edd-401450f78e09
+                        amount:
+                          currency: USD
+                          value: 12345
+                        date: '2022-07-21'
+                        city: Minneapolis
+                        state: MN
+                        postal_code: '55401'
+                        name: Some Merchant
+                        type: AUTHORIZATION
+                        running_total:
+                          currency: USD
+                          value: 12345
+        '400':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Response for errors returned by virtual_card service.
+          content:
+            application/json:
+              schema:
+                description: Represents an error returned by virtual_card service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: Virtual Card error reason codes
+                    enum:
+                    - Unauthorized
+                    - Request_Validation
+                    - Bad_Request
+                    - Not_Found
+                    - Unable_to_Authorize
+                    - Unable_to_Settle
+                    - Internal_Server_Failure
+                    example: Unauthorized
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+components:
+  securitySchemes:
+    bearerAuthApplication:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: The scoped JWT provided by the Auth service.
+    bearerAuthVirtualCard:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: The JWT access token provided by the Auth service.

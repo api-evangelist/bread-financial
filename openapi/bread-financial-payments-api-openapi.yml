@@ -1,0 +1,3067 @@
+openapi: 3.2.0
+info:
+  title: Payments API
+  description: Payments provides support for managing payment methods as well as retrieving payment execution and audit details.
+  version: 2.0.0
+  contact:
+    email: partnership-growth@getbread.com
+servers:
+- url: https://api-preview.platform.breadpayments.com/
+  description: Preview environment
+- url: https://api.platform.breadpayments.com/
+  description: Production environment
+tags:
+- name: Payments
+paths:
+  /api/payments/payment/{referenceID}:
+    get:
+      summary: Get Payment
+      description: Returns a payment matching the provided id.
+      operationId: getPayment
+      responses:
+        '200':
+          description: A successful response returns a payment model.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A response object for a payment get request.
+                properties:
+                  payment:
+                    type: object
+                    description: An object that represents a payment model.
+                    properties:
+                      id:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment identifier.
+                      ownerEntityID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique owner entity identifier.
+                      paymentMethodID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment method identifier.
+                      programID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique program identifier.
+                      referenceID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment reference identifier.
+                      sourceID:
+                        type: string
+                        description: Source identifier.
+                        example: b2ca2d87-488a-4c8e-90b7-52b24105829b
+                      paymentProductID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment product identifier.
+                      amount:
+                        allOf:
+                        - required:
+                          - currency
+                          - value
+                          properties:
+                            currency:
+                              type: string
+                              description: The three letter currency code as defined in ISO 4217.
+                              example: USD
+                              minLength: 3
+                              maxLength: 3
+                              externalDocs:
+                                description: ISO 4217
+                                url: https://en.wikipedia.org/wiki/ISO_4217
+                            value:
+                              type: integer
+                              description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                              format: int64
+                              example: 100
+                          description: Represents a monetary amount in the specified currency
+                          example:
+                            currency: USD
+                            value: 50000
+                        description: The amount this payment is being made for.
+                      ownerEntityType:
+                        type: string
+                        description: Identifies information about the caller making the payment.
+                        enum:
+                        - UNKNOWN_ENTITY_TYPE
+                        - PAYMENT_AGREEMENT
+                        - SETTLEMENT_TRANSACTION
+                        default: UNKNOWN_ENTITY_TYPE
+                        example: PAYMENT_AGREEMENT
+                      scopeID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique scope identifier that should cor relate to scopeType. For example, a buyer id or merchant id.
+                      scopeType:
+                        type: string
+                        enum:
+                        - UNKNOWN_SCOPE_TYPE
+                        - BUYER
+                        - MERCHANT
+                        - PROGRAM_AGREEMENT
+                        - PARTNER
+                        default: UNKNOWN_SCOPE_TYPE
+                        description: Identifies the owner of the payment method.
+                        example: BUYER
+                      sourceType:
+                        type: string
+                        description: Identifies how the payment was originated.
+                        enum:
+                        - UNKNOWN_SOURCE_TYPE
+                        - AUTOPAY
+                        - SCHEDULED
+                        - COLLECTIONS
+                        - ONETIME
+                        - OCC
+                        - REFUND
+                        - DOWN_PAYMENT
+                        - CHECK_PAYMENT
+                        - MANUAL_PAYMENT
+                        - EXTERNAL_COLLECTION
+                        - SPLITPAY_FIRST_PAYMENT
+                        - TRADE_IN_CREDIT
+                        default: UNKNOWN_SOURCE_TYPE
+                        example: ONETIME
+                      subSourceType:
+                        type: string
+                        description: Identifies additional source type information.
+                        enum:
+                        - UNKNOWN_SUB_SOURCE_TYPE
+                        - WEB
+                        - TEL
+                        - IVR
+                        default: UNKNOWN_SUB_SOURCE_TYPE
+                        example: WEB
+                      status:
+                        type: string
+                        description: 'Identifies the processing status of a payment. Note: `FAILED` is deprecated in favor of RETURNED'
+                        enum:
+                        - UNKNOWN_STATUS
+                        - PENDING
+                        - RECEIVED
+                        - FAILED
+                        - RETURNED
+                        - REJECTED
+                        - CANCELLED
+                        default: UNKNOWN_STATUS
+                        example: RECEIVED
+                      subStatus:
+                        type: string
+                        description: Identifies additional payment status information.
+                        enum:
+                        - UNKNOWN_SUB_STATUS
+                        - NONE
+                        - RETRY
+                        default: UNKNOWN_SUB_STATUS
+                        example: RETRY
+                      transactionType:
+                        type: string
+                        description: Identifies whether the payment was a credit or a debit.
+                        enum:
+                        - UNKNOWN_TRANSACTION_TYPE
+                        - DEBIT
+                        - CREDIT
+                        default: UNKNOWN_TRANSACTION_TYPE
+                        example: DEBIT
+                      deletedAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the payment was deleted.
+                      isCancellable:
+                        type: boolean
+                        description: A flag indicating if a payment is cancellable
+                        example: true
+                      transactionID:
+                        type: string
+                        description: third party transaction id
+                      reconID:
+                        type: string
+                        description: third party reconciliation id
+                      createdAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the refund was created.
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+      parameters:
+      - name: referenceID
+        in: path
+        required: true
+        description: A unique payment reference identifier.
+        schema:
+          type: string
+          format: uuid
+          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+          externalDocs:
+            description: RFC4122
+            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+      - name: paymentID.eq
+        in: query
+        required: false
+        description: A unique payment identifier.
+        schema:
+          type: string
+          format: uuid
+          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+          externalDocs:
+            description: RFC4122
+            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+      - description: API version
+        in: header
+        name: X-API-VERSION
+        required: true
+        schema:
+          type: string
+        example: v2
+      tags:
+      - Payments
+      security:
+      - bearerAuthPayments:
+        - r:payment
+  /api/payments/payment/bank-id/{ID}:
+    get:
+      summary: Get Payment by either transaction id or reconciliation id
+      description: Returns a payment matching the provided id.
+      operationId: getPaymentByBankID
+      responses:
+        '200':
+          description: A successful response returns an array of payment models.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A response object for any request which returns a list of payments.
+                required:
+                - payment
+                properties:
+                  payment:
+                    type: array
+                    items:
+                      type: object
+                      description: An object that represents a payment model.
+                      properties:
+                        id:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique payment identifier.
+                        ownerEntityID:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique owner entity identifier.
+                        paymentMethodID:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique payment method identifier.
+                        programID:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique program identifier.
+                        referenceID:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique payment reference identifier.
+                        sourceID:
+                          type: string
+                          description: Source identifier.
+                          example: b2ca2d87-488a-4c8e-90b7-52b24105829b
+                        paymentProductID:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique payment product identifier.
+                        amount:
+                          allOf:
+                          - required:
+                            - currency
+                            - value
+                            properties:
+                              currency:
+                                type: string
+                                description: The three letter currency code as defined in ISO 4217.
+                                example: USD
+                                minLength: 3
+                                maxLength: 3
+                                externalDocs:
+                                  description: ISO 4217
+                                  url: https://en.wikipedia.org/wiki/ISO_4217
+                              value:
+                                type: integer
+                                description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                                format: int64
+                                example: 100
+                            description: Represents a monetary amount in the specified currency
+                            example:
+                              currency: USD
+                              value: 50000
+                          description: The amount this payment is being made for.
+                        ownerEntityType:
+                          type: string
+                          description: Identifies information about the caller making the payment.
+                          enum:
+                          - UNKNOWN_ENTITY_TYPE
+                          - PAYMENT_AGREEMENT
+                          - SETTLEMENT_TRANSACTION
+                          default: UNKNOWN_ENTITY_TYPE
+                          example: PAYMENT_AGREEMENT
+                        scopeID:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique scope identifier that should cor relate to scopeType. For example, a buyer id or merchant id.
+                        scopeType:
+                          type: string
+                          enum:
+                          - UNKNOWN_SCOPE_TYPE
+                          - BUYER
+                          - MERCHANT
+                          - PROGRAM_AGREEMENT
+                          - PARTNER
+                          default: UNKNOWN_SCOPE_TYPE
+                          description: Identifies the owner of the payment method.
+                          example: BUYER
+                        sourceType:
+                          type: string
+                          description: Identifies how the payment was originated.
+                          enum:
+                          - UNKNOWN_SOURCE_TYPE
+                          - AUTOPAY
+                          - SCHEDULED
+                          - COLLECTIONS
+                          - ONETIME
+                          - OCC
+                          - REFUND
+                          - DOWN_PAYMENT
+                          - CHECK_PAYMENT
+                          - MANUAL_PAYMENT
+                          - EXTERNAL_COLLECTION
+                          - SPLITPAY_FIRST_PAYMENT
+                          - TRADE_IN_CREDIT
+                          default: UNKNOWN_SOURCE_TYPE
+                          example: ONETIME
+                        subSourceType:
+                          type: string
+                          description: Identifies additional source type information.
+                          enum:
+                          - UNKNOWN_SUB_SOURCE_TYPE
+                          - WEB
+                          - TEL
+                          - IVR
+                          default: UNKNOWN_SUB_SOURCE_TYPE
+                          example: WEB
+                        status:
+                          type: string
+                          description: 'Identifies the processing status of a payment. Note: `FAILED` is deprecated in favor of RETURNED'
+                          enum:
+                          - UNKNOWN_STATUS
+                          - PENDING
+                          - RECEIVED
+                          - FAILED
+                          - RETURNED
+                          - REJECTED
+                          - CANCELLED
+                          default: UNKNOWN_STATUS
+                          example: RECEIVED
+                        subStatus:
+                          type: string
+                          description: Identifies additional payment status information.
+                          enum:
+                          - UNKNOWN_SUB_STATUS
+                          - NONE
+                          - RETRY
+                          default: UNKNOWN_SUB_STATUS
+                          example: RETRY
+                        transactionType:
+                          type: string
+                          description: Identifies whether the payment was a credit or a debit.
+                          enum:
+                          - UNKNOWN_TRANSACTION_TYPE
+                          - DEBIT
+                          - CREDIT
+                          default: UNKNOWN_TRANSACTION_TYPE
+                          example: DEBIT
+                        deletedAt:
+                          allOf:
+                          - type: string
+                            format: date-time
+                            description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                            example: '2020-12-31T15:10:55Z'
+                            externalDocs:
+                              description: RFC3339
+                              url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                          description: The timestamp of when the payment was deleted.
+                        isCancellable:
+                          type: boolean
+                          description: A flag indicating if a payment is cancellable
+                          example: true
+                        transactionID:
+                          type: string
+                          description: third party transaction id
+                        reconID:
+                          type: string
+                          description: third party reconciliation id
+                        createdAt:
+                          allOf:
+                          - type: string
+                            format: date-time
+                            description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                            example: '2020-12-31T15:10:55Z'
+                            externalDocs:
+                              description: RFC3339
+                              url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                          description: The timestamp of when the refund was created.
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+      parameters:
+      - name: ID
+        in: path
+        required: true
+        description: A unique payment reference identifier.
+        schema:
+          type: string
+      - description: API version
+        in: header
+        name: X-API-VERSION
+        required: true
+        schema:
+          type: string
+        example: v2
+      tags:
+      - Payments
+      security:
+      - bearerAuthPayments:
+        - r:payment
+  /api/payments/payment/cancel:
+    put:
+      summary: Cancel a payment
+      description: Cancel a payment by referenceID and returns the updated payment.
+      operationId: cancelPayment
+      responses:
+        '200':
+          description: A successful response returns a payment model with cancelled status.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A response object for a cancel payment request.
+                required:
+                - payment
+                properties:
+                  payment:
+                    type: object
+                    description: An object that represents a payment model.
+                    properties:
+                      id:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment identifier.
+                      ownerEntityID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique owner entity identifier.
+                      paymentMethodID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment method identifier.
+                      programID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique program identifier.
+                      referenceID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment reference identifier.
+                      sourceID:
+                        type: string
+                        description: Source identifier.
+                        example: b2ca2d87-488a-4c8e-90b7-52b24105829b
+                      paymentProductID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment product identifier.
+                      amount:
+                        allOf:
+                        - required:
+                          - currency
+                          - value
+                          properties:
+                            currency:
+                              type: string
+                              description: The three letter currency code as defined in ISO 4217.
+                              example: USD
+                              minLength: 3
+                              maxLength: 3
+                              externalDocs:
+                                description: ISO 4217
+                                url: https://en.wikipedia.org/wiki/ISO_4217
+                            value:
+                              type: integer
+                              description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                              format: int64
+                              example: 100
+                          description: Represents a monetary amount in the specified currency
+                          example:
+                            currency: USD
+                            value: 50000
+                        description: The amount this payment is being made for.
+                      ownerEntityType:
+                        type: string
+                        description: Identifies information about the caller making the payment.
+                        enum:
+                        - UNKNOWN_ENTITY_TYPE
+                        - PAYMENT_AGREEMENT
+                        - SETTLEMENT_TRANSACTION
+                        default: UNKNOWN_ENTITY_TYPE
+                        example: PAYMENT_AGREEMENT
+                      scopeID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique scope identifier that should cor relate to scopeType. For example, a buyer id or merchant id.
+                      scopeType:
+                        type: string
+                        enum:
+                        - UNKNOWN_SCOPE_TYPE
+                        - BUYER
+                        - MERCHANT
+                        - PROGRAM_AGREEMENT
+                        - PARTNER
+                        default: UNKNOWN_SCOPE_TYPE
+                        description: Identifies the owner of the payment method.
+                        example: BUYER
+                      sourceType:
+                        type: string
+                        description: Identifies how the payment was originated.
+                        enum:
+                        - UNKNOWN_SOURCE_TYPE
+                        - AUTOPAY
+                        - SCHEDULED
+                        - COLLECTIONS
+                        - ONETIME
+                        - OCC
+                        - REFUND
+                        - DOWN_PAYMENT
+                        - CHECK_PAYMENT
+                        - MANUAL_PAYMENT
+                        - EXTERNAL_COLLECTION
+                        - SPLITPAY_FIRST_PAYMENT
+                        - TRADE_IN_CREDIT
+                        default: UNKNOWN_SOURCE_TYPE
+                        example: ONETIME
+                      subSourceType:
+                        type: string
+                        description: Identifies additional source type information.
+                        enum:
+                        - UNKNOWN_SUB_SOURCE_TYPE
+                        - WEB
+                        - TEL
+                        - IVR
+                        default: UNKNOWN_SUB_SOURCE_TYPE
+                        example: WEB
+                      status:
+                        type: string
+                        description: 'Identifies the processing status of a payment. Note: `FAILED` is deprecated in favor of RETURNED'
+                        enum:
+                        - UNKNOWN_STATUS
+                        - PENDING
+                        - RECEIVED
+                        - FAILED
+                        - RETURNED
+                        - REJECTED
+                        - CANCELLED
+                        default: UNKNOWN_STATUS
+                        example: RECEIVED
+                      subStatus:
+                        type: string
+                        description: Identifies additional payment status information.
+                        enum:
+                        - UNKNOWN_SUB_STATUS
+                        - NONE
+                        - RETRY
+                        default: UNKNOWN_SUB_STATUS
+                        example: RETRY
+                      transactionType:
+                        type: string
+                        description: Identifies whether the payment was a credit or a debit.
+                        enum:
+                        - UNKNOWN_TRANSACTION_TYPE
+                        - DEBIT
+                        - CREDIT
+                        default: UNKNOWN_TRANSACTION_TYPE
+                        example: DEBIT
+                      deletedAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the payment was deleted.
+                      isCancellable:
+                        type: boolean
+                        description: A flag indicating if a payment is cancellable
+                        example: true
+                      transactionID:
+                        type: string
+                        description: third party transaction id
+                      reconID:
+                        type: string
+                        description: third party reconciliation id
+                      createdAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the refund was created.
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+      parameters:
+      - description: API version
+        in: header
+        name: X-API-VERSION
+        required: true
+        schema:
+          type: string
+        example: v2
+      requestBody:
+        description: Request body for cancelling a payment.
+        content:
+          application/json:
+            schema:
+              description: A request to cancel a payment based on given referenceId
+              properties:
+                referenceId:
+                  allOf:
+                  - type: string
+                    format: uuid
+                    description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                    example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                    externalDocs:
+                      description: RFC4122
+                      url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                  description: An identifier that can reference to the payment
+      tags:
+      - Payments
+      security:
+      - bearerAuthPayments:
+        - u:payment.tool
+  /api/payments/payment/fail-single-payment:
+    put:
+      summary: Fail Single Payment
+      description: 'Fails a single payment by referenceID or transactionID and returns the updated payment. Note: you''re not required to supply both a referenceID and a transactionID - they''re marked as required since interdependencies between query parameters are still not supported by openapi.'
+      operationId: failSinglePayment
+      responses:
+        '200':
+          description: A successful response returns a failed payment model.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A response object for a fail single payment request.
+                properties:
+                  payment:
+                    type: object
+                    description: An object that represents a payment model.
+                    properties:
+                      id:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment identifier.
+                      ownerEntityID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique owner entity identifier.
+                      paymentMethodID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment method identifier.
+                      programID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique program identifier.
+                      referenceID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment reference identifier.
+                      sourceID:
+                        type: string
+                        description: Source identifier.
+                        example: b2ca2d87-488a-4c8e-90b7-52b24105829b
+                      paymentProductID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment product identifier.
+                      amount:
+                        allOf:
+                        - required:
+                          - currency
+                          - value
+                          properties:
+                            currency:
+                              type: string
+                              description: The three letter currency code as defined in ISO 4217.
+                              example: USD
+                              minLength: 3
+                              maxLength: 3
+                              externalDocs:
+                                description: ISO 4217
+                                url: https://en.wikipedia.org/wiki/ISO_4217
+                            value:
+                              type: integer
+                              description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                              format: int64
+                              example: 100
+                          description: Represents a monetary amount in the specified currency
+                          example:
+                            currency: USD
+                            value: 50000
+                        description: The amount this payment is being made for.
+                      ownerEntityType:
+                        type: string
+                        description: Identifies information about the caller making the payment.
+                        enum:
+                        - UNKNOWN_ENTITY_TYPE
+                        - PAYMENT_AGREEMENT
+                        - SETTLEMENT_TRANSACTION
+                        default: UNKNOWN_ENTITY_TYPE
+                        example: PAYMENT_AGREEMENT
+                      scopeID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique scope identifier that should cor relate to scopeType. For example, a buyer id or merchant id.
+                      scopeType:
+                        type: string
+                        enum:
+                        - UNKNOWN_SCOPE_TYPE
+                        - BUYER
+                        - MERCHANT
+                        - PROGRAM_AGREEMENT
+                        - PARTNER
+                        default: UNKNOWN_SCOPE_TYPE
+                        description: Identifies the owner of the payment method.
+                        example: BUYER
+                      sourceType:
+                        type: string
+                        description: Identifies how the payment was originated.
+                        enum:
+                        - UNKNOWN_SOURCE_TYPE
+                        - AUTOPAY
+                        - SCHEDULED
+                        - COLLECTIONS
+                        - ONETIME
+                        - OCC
+                        - REFUND
+                        - DOWN_PAYMENT
+                        - CHECK_PAYMENT
+                        - MANUAL_PAYMENT
+                        - EXTERNAL_COLLECTION
+                        - SPLITPAY_FIRST_PAYMENT
+                        - TRADE_IN_CREDIT
+                        default: UNKNOWN_SOURCE_TYPE
+                        example: ONETIME
+                      subSourceType:
+                        type: string
+                        description: Identifies additional source type information.
+                        enum:
+                        - UNKNOWN_SUB_SOURCE_TYPE
+                        - WEB
+                        - TEL
+                        - IVR
+                        default: UNKNOWN_SUB_SOURCE_TYPE
+                        example: WEB
+                      status:
+                        type: string
+                        description: 'Identifies the processing status of a payment. Note: `FAILED` is deprecated in favor of RETURNED'
+                        enum:
+                        - UNKNOWN_STATUS
+                        - PENDING
+                        - RECEIVED
+                        - FAILED
+                        - RETURNED
+                        - REJECTED
+                        - CANCELLED
+                        default: UNKNOWN_STATUS
+                        example: RECEIVED
+                      subStatus:
+                        type: string
+                        description: Identifies additional payment status information.
+                        enum:
+                        - UNKNOWN_SUB_STATUS
+                        - NONE
+                        - RETRY
+                        default: UNKNOWN_SUB_STATUS
+                        example: RETRY
+                      transactionType:
+                        type: string
+                        description: Identifies whether the payment was a credit or a debit.
+                        enum:
+                        - UNKNOWN_TRANSACTION_TYPE
+                        - DEBIT
+                        - CREDIT
+                        default: UNKNOWN_TRANSACTION_TYPE
+                        example: DEBIT
+                      deletedAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the payment was deleted.
+                      isCancellable:
+                        type: boolean
+                        description: A flag indicating if a payment is cancellable
+                        example: true
+                      transactionID:
+                        type: string
+                        description: third party transaction id
+                      reconID:
+                        type: string
+                        description: third party reconciliation id
+                      createdAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the refund was created.
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+      parameters:
+      - description: API version
+        in: header
+        name: X-API-VERSION
+        required: true
+        schema:
+          type: string
+        example: v2
+      requestBody:
+        description: Request body for failing single payment.
+        content:
+          application/json:
+            schema:
+              description: A request to fail a payment based on given referenceId or transactionId
+              properties:
+                referenceId:
+                  allOf:
+                  - type: string
+                    format: uuid
+                    description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                    example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                    externalDocs:
+                      description: RFC4122
+                      url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                  description: An identifier that can reference to the payment
+                transactionId:
+                  allOf:
+                  - type: string
+                    format: uuid
+                    description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                    example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                    externalDocs:
+                      description: RFC4122
+                      url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                  description: A unique payment transaction identifier.
+                errorCode:
+                  type: string
+                  description: Error code to assign to the payment execution that is to be failed.
+      tags:
+      - Payments
+      security:
+      - bearerAuthPayments:
+        - u:payment.tool
+  /api/payments/payment/{referenceID}/audit:
+    get:
+      summary: Lists Payment Audit Records
+      description: Returns the history of changes for the executions on an individual payment
+      operationId: listAudit
+      responses:
+        '200':
+          description: A successful response returns an array of payment audit models.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A response object for a payment audit get request.
+                properties:
+                  payments:
+                    type: array
+                    items:
+                      type: object
+                      description: An object that represents a payment audit model.
+                      properties:
+                        id:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique payment audit identifier.
+                        executionID:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique payment execution identifier.
+                        paymentID:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique payment identifier.
+                        referenceID:
+                          allOf:
+                          - type: string
+                            format: uuid
+                            description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                            example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                            externalDocs:
+                              description: RFC4122
+                              url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                          description: A unique payment reference identifier.
+                        executionStatus:
+                          type: string
+                          description: 'Identifies the processing status of a payment. Note: `FAILED` is deprecated in favor of RETURNED'
+                          enum:
+                          - UNKNOWN_STATUS
+                          - PENDING
+                          - RECEIVED
+                          - FAILED
+                          - RETURNED
+                          - REJECTED
+                          - CANCELLED
+                          default: UNKNOWN_STATUS
+                          example: RECEIVED
+                        reasonCode:
+                          type: string
+                          description: An error code from the payment processor identifying why the payment failed.
+                          example: E1000
+                        status:
+                          type: string
+                          description: 'Identifies the processing status of a payment. Note: `FAILED` is deprecated in favor of RETURNED'
+                          enum:
+                          - UNKNOWN_STATUS
+                          - PENDING
+                          - RECEIVED
+                          - FAILED
+                          - RETURNED
+                          - REJECTED
+                          - CANCELLED
+                          default: UNKNOWN_STATUS
+                          example: RECEIVED
+                        createdTs:
+                          allOf:
+                          - type: string
+                            format: date-time
+                            description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                            example: '2020-12-31T15:10:55Z'
+                            externalDocs:
+                              description: RFC3339
+                              url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                          description: The context offset timestamp of when this payment audit record was created.
+                        createdAt:
+                          allOf:
+                          - type: string
+                            format: date-time
+                            description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                            example: '2020-12-31T15:10:55Z'
+                            externalDocs:
+                              description: RFC3339
+                              url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                          description: The system timestamp of when this payment audit record was created.
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+      parameters:
+      - name: referenceID
+        in: path
+        required: true
+        description: A unique payment reference identifier.
+        schema:
+          type: string
+          format: uuid
+          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+          externalDocs:
+            description: RFC4122
+            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+      - description: API version
+        in: header
+        name: X-API-VERSION
+        required: true
+        schema:
+          type: string
+        example: v2
+      tags:
+      - Payments
+      security:
+      - bearerAuthPayments:
+        - r:payment
+  /api/payments/payment/receive:
+    put:
+      summary: Receive a payment
+      description: Receive a payment, If the payment is already in received status, it will be ignored. If payment in PENDING status, the status will be update to received and send kafka event.
+      operationId: receivePayment
+      responses:
+        '200':
+          description: A successful response returns a received payment model.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A response object for a receive payment request.
+                properties:
+                  payment:
+                    type: object
+                    description: An object that represents a payment model.
+                    properties:
+                      id:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment identifier.
+                      ownerEntityID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique owner entity identifier.
+                      paymentMethodID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment method identifier.
+                      programID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique program identifier.
+                      referenceID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment reference identifier.
+                      sourceID:
+                        type: string
+                        description: Source identifier.
+                        example: b2ca2d87-488a-4c8e-90b7-52b24105829b
+                      paymentProductID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment product identifier.
+                      amount:
+                        allOf:
+                        - required:
+                          - currency
+                          - value
+                          properties:
+                            currency:
+                              type: string
+                              description: The three letter currency code as defined in ISO 4217.
+                              example: USD
+                              minLength: 3
+                              maxLength: 3
+                              externalDocs:
+                                description: ISO 4217
+                                url: https://en.wikipedia.org/wiki/ISO_4217
+                            value:
+                              type: integer
+                              description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                              format: int64
+                              example: 100
+                          description: Represents a monetary amount in the specified currency
+                          example:
+                            currency: USD
+                            value: 50000
+                        description: The amount this payment is being made for.
+                      ownerEntityType:
+                        type: string
+                        description: Identifies information about the caller making the payment.
+                        enum:
+                        - UNKNOWN_ENTITY_TYPE
+                        - PAYMENT_AGREEMENT
+                        - SETTLEMENT_TRANSACTION
+                        default: UNKNOWN_ENTITY_TYPE
+                        example: PAYMENT_AGREEMENT
+                      scopeID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique scope identifier that should cor relate to scopeType. For example, a buyer id or merchant id.
+                      scopeType:
+                        type: string
+                        enum:
+                        - UNKNOWN_SCOPE_TYPE
+                        - BUYER
+                        - MERCHANT
+                        - PROGRAM_AGREEMENT
+                        - PARTNER
+                        default: UNKNOWN_SCOPE_TYPE
+                        description: Identifies the owner of the payment method.
+                        example: BUYER
+                      sourceType:
+                        type: string
+                        description: Identifies how the payment was originated.
+                        enum:
+                        - UNKNOWN_SOURCE_TYPE
+                        - AUTOPAY
+                        - SCHEDULED
+                        - COLLECTIONS
+                        - ONETIME
+                        - OCC
+                        - REFUND
+                        - DOWN_PAYMENT
+                        - CHECK_PAYMENT
+                        - MANUAL_PAYMENT
+                        - EXTERNAL_COLLECTION
+                        - SPLITPAY_FIRST_PAYMENT
+                        - TRADE_IN_CREDIT
+                        default: UNKNOWN_SOURCE_TYPE
+                        example: ONETIME
+                      subSourceType:
+                        type: string
+                        description: Identifies additional source type information.
+                        enum:
+                        - UNKNOWN_SUB_SOURCE_TYPE
+                        - WEB
+                        - TEL
+                        - IVR
+                        default: UNKNOWN_SUB_SOURCE_TYPE
+                        example: WEB
+                      status:
+                        type: string
+                        description: 'Identifies the processing status of a payment. Note: `FAILED` is deprecated in favor of RETURNED'
+                        enum:
+                        - UNKNOWN_STATUS
+                        - PENDING
+                        - RECEIVED
+                        - FAILED
+                        - RETURNED
+                        - REJECTED
+                        - CANCELLED
+                        default: UNKNOWN_STATUS
+                        example: RECEIVED
+                      subStatus:
+                        type: string
+                        description: Identifies additional payment status information.
+                        enum:
+                        - UNKNOWN_SUB_STATUS
+                        - NONE
+                        - RETRY
+                        default: UNKNOWN_SUB_STATUS
+                        example: RETRY
+                      transactionType:
+                        type: string
+                        description: Identifies whether the payment was a credit or a debit.
+                        enum:
+                        - UNKNOWN_TRANSACTION_TYPE
+                        - DEBIT
+                        - CREDIT
+                        default: UNKNOWN_TRANSACTION_TYPE
+                        example: DEBIT
+                      deletedAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the payment was deleted.
+                      isCancellable:
+                        type: boolean
+                        description: A flag indicating if a payment is cancellable
+                        example: true
+                      transactionID:
+                        type: string
+                        description: third party transaction id
+                      reconID:
+                        type: string
+                        description: third party reconciliation id
+                      createdAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the refund was created.
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+      parameters:
+      - description: API version
+        in: header
+        name: X-API-VERSION
+        required: true
+        schema:
+          type: string
+        example: v2
+      requestBody:
+        description: Request body for receiving a payment
+        content:
+          application/json:
+            schema:
+              description: A request to receive a payment based on given referenceId or transactionId
+              properties:
+                referenceId:
+                  allOf:
+                  - type: string
+                    format: uuid
+                    description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                    example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                    externalDocs:
+                      description: RFC4122
+                      url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                  description: An identifier that can reference to the payment
+                transactionId:
+                  allOf:
+                  - type: string
+                    format: uuid
+                    description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                    example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                    externalDocs:
+                      description: RFC4122
+                      url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                  description: A unique payment transaction identifier.
+      tags:
+      - Payments
+      security:
+      - bearerAuthPayments:
+        - u:payment.tool
+  /api/payments/payment/reverse:
+    put:
+      summary: Reverse Payment
+      description: Reverses a payment by referenceID and returns either the reversed payment or the created refund (for ACH payments for a previous date).
+      operationId: reversePayment
+      responses:
+        '200':
+          description: A successful response returns either a reversed payment model or a new refund model.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A response object for a reverse payment request.
+                properties:
+                  resultType:
+                    type: string
+                    enum:
+                    - UNKNOWN_REVERSE_PAYMENT_RESULT_TYPE
+                    - PAYMENT
+                    - REFUND
+                    default: UNKNOWN_REVERSE_PAYMENT_RESULT_TYPE
+                    description: Identifies the result type of a payment reversal.
+                    example: PAYMENT
+                  payment:
+                    type: object
+                    description: An object that represents a payment model.
+                    properties:
+                      id:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment identifier.
+                      ownerEntityID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique owner entity identifier.
+                      paymentMethodID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment method identifier.
+                      programID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique program identifier.
+                      referenceID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment reference identifier.
+                      sourceID:
+                        type: string
+                        description: Source identifier.
+                        example: b2ca2d87-488a-4c8e-90b7-52b24105829b
+                      paymentProductID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique payment product identifier.
+                      amount:
+                        allOf:
+                        - required:
+                          - currency
+                          - value
+                          properties:
+                            currency:
+                              type: string
+                              description: The three letter currency code as defined in ISO 4217.
+                              example: USD
+                              minLength: 3
+                              maxLength: 3
+                              externalDocs:
+                                description: ISO 4217
+                                url: https://en.wikipedia.org/wiki/ISO_4217
+                            value:
+                              type: integer
+                              description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                              format: int64
+                              example: 100
+                          description: Represents a monetary amount in the specified currency
+                          example:
+                            currency: USD
+                            value: 50000
+                        description: The amount this payment is being made for.
+                      ownerEntityType:
+                        type: string
+                        description: Identifies information about the caller making the payment.
+                        enum:
+                        - UNKNOWN_ENTITY_TYPE
+                        - PAYMENT_AGREEMENT
+                        - SETTLEMENT_TRANSACTION
+                        default: UNKNOWN_ENTITY_TYPE
+                        example: PAYMENT_AGREEMENT
+                      scopeID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique scope identifier that should cor relate to scopeType. For example, a buyer id or merchant id.
+                      scopeType:
+                        type: string
+                        enum:
+                        - UNKNOWN_SCOPE_TYPE
+                        - BUYER
+                        - MERCHANT
+                        - PROGRAM_AGREEMENT
+                        - PARTNER
+                        default: UNKNOWN_SCOPE_TYPE
+                        description: Identifies the owner of the payment method.
+                        example: BUYER
+                      sourceType:
+                        type: string
+                        description: Identifies how the payment was originated.
+                        enum:
+                        - UNKNOWN_SOURCE_TYPE
+                        - AUTOPAY
+                        - SCHEDULED
+                        - COLLECTIONS
+                        - ONETIME
+                        - OCC
+                        - REFUND
+                        - DOWN_PAYMENT
+                        - CHECK_PAYMENT
+                        - MANUAL_PAYMENT
+                        - EXTERNAL_COLLECTION
+                        - SPLITPAY_FIRST_PAYMENT
+                        - TRADE_IN_CREDIT
+                        default: UNKNOWN_SOURCE_TYPE
+                        example: ONETIME
+                      subSourceType:
+                        type: string
+                        description: Identifies additional source type information.
+                        enum:
+                        - UNKNOWN_SUB_SOURCE_TYPE
+                        - WEB
+                        - TEL
+                        - IVR
+                        default: UNKNOWN_SUB_SOURCE_TYPE
+                        example: WEB
+                      status:
+                        type: string
+                        description: 'Identifies the processing status of a payment. Note: `FAILED` is deprecated in favor of RETURNED'
+                        enum:
+                        - UNKNOWN_STATUS
+                        - PENDING
+                        - RECEIVED
+                        - FAILED
+                        - RETURNED
+                        - REJECTED
+                        - CANCELLED
+                        default: UNKNOWN_STATUS
+                        example: RECEIVED
+                      subStatus:
+                        type: string
+                        description: Identifies additional payment status information.
+                        enum:
+                        - UNKNOWN_SUB_STATUS
+                        - NONE
+                        - RETRY
+                        default: UNKNOWN_SUB_STATUS
+                        example: RETRY
+                      transactionType:
+                        type: string
+                        description: Identifies whether the payment was a credit or a debit.
+                        enum:
+                        - UNKNOWN_TRANSACTION_TYPE
+                        - DEBIT
+                        - CREDIT
+                        default: UNKNOWN_TRANSACTION_TYPE
+                        example: DEBIT
+                      deletedAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the payment was deleted.
+                      isCancellable:
+                        type: boolean
+                        description: A flag indicating if a payment is cancellable
+                        example: true
+                      transactionID:
+                        type: string
+                        description: third party transaction id
+                      reconID:
+                        type: string
+                        description: third party reconciliation id
+                      createdAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the refund was created.
+                  refund:
+                    type: object
+                    description: An object that represents a refund model.
+                    properties:
+                      id:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique refund identifier.
+                      referenceID:
+                        allOf:
+                        - type: string
+                          format: uuid
+                          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                          externalDocs:
+                            description: RFC4122
+                            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                        description: A unique refund reference identifier.
+                      requestedAmount:
+                        allOf:
+                        - required:
+                          - currency
+                          - value
+                          properties:
+                            currency:
+                              type: string
+                              description: The three letter currency code as defined in ISO 4217.
+                              example: USD
+                              minLength: 3
+                              maxLength: 3
+                              externalDocs:
+                                description: ISO 4217
+                                url: https://en.wikipedia.org/wiki/ISO_4217
+                            value:
+                              type: integer
+                              description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                              format: int64
+                              example: 100
+                          description: Represents a monetary amount in the specified currency
+                          example:
+                            currency: USD
+                            value: 50000
+                        description: The amount this refund is being requested for.
+                      sourceType:
+                        type: string
+                        description: Identifies how the refund was originated.
+                        enum:
+                        - UNKNOWN_SOURCE_TYPE
+                        - OCC
+                        - REVERSAL
+                        default: UNKNOWN_SOURCE_TYPE
+                        example: OCC
+                      status:
+                        type: string
+                        description: Identifies the processing status of a refund.
+                        enum:
+                        - UNKNOWN_STATUS
+                        - RECEIVED
+                        - SUCCESS
+                        - PENDING
+                        - PARTIAL
+                        - FAILED
+                        - NETWORK_FAILED
+                        - CANCELLED
+                        - REJECTED
+                        - RETURNED
+                        default: UNKNOWN_STATUS
+                        example: SUCCESS
+                      createdAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the refund was created.
+                      updatedAt:
+                        allOf:
+                        - type: string
+                          format: date-time
+                          description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                          example: '2020-12-31T15:10:55Z'
+                          externalDocs:
+                            description: RFC3339
+                            url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                        description: The timestamp of when the refund was deleted.
+                      payments:
+                        type: array
+                        items:
+                          type: object
+                          description: An object that represents a payment model.
+                          properties:
+                            id:
+                              allOf:
+                              - type: string
+                                format: uuid
+                                description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                                example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                                externalDocs:
+                                  description: RFC4122
+                                  url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                              description: A unique payment identifier.
+                            ownerEntityID:
+                              allOf:
+                              - type: string
+                                format: uuid
+                                description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                                example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                                externalDocs:
+                                  description: RFC4122
+                                  url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                              description: A unique owner entity identifier.
+                            paymentMethodID:
+                              allOf:
+                              - type: string
+                                format: uuid
+                                description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                                example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                                externalDocs:
+                                  description: RFC4122
+                                  url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                              description: A unique payment method identifier.
+                            programID:
+                              allOf:
+                              - type: string
+                                format: uuid
+                                description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                                example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                                externalDocs:
+                                  description: RFC4122
+                                  url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                              description: A unique program identifier.
+                            referenceID:
+                              allOf:
+                              - type: string
+                                format: uuid
+                                description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                                example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                                externalDocs:
+                                  description: RFC4122
+                                  url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                              description: A unique payment reference identifier.
+                            sourceID:
+                              type: string
+                              description: Source identifier.
+                              example: b2ca2d87-488a-4c8e-90b7-52b24105829b
+                            paymentProductID:
+                              allOf:
+                              - type: string
+                                format: uuid
+                                description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                                example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                                externalDocs:
+                                  description: RFC4122
+                                  url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                              description: A unique payment product identifier.
+                            amount:
+                              allOf:
+                              - required:
+                                - currency
+                                - value
+                                properties:
+                                  currency:
+                                    type: string
+                                    description: The three letter currency code as defined in ISO 4217.
+                                    example: USD
+                                    minLength: 3
+                                    maxLength: 3
+                                    externalDocs:
+                                      description: ISO 4217
+                                      url: https://en.wikipedia.org/wiki/ISO_4217
+                                  value:
+                                    type: integer
+                                    description: 'Monetary value as an integral number of the currency fractional unit e.g for USD: cents'
+                                    format: int64
+                                    example: 100
+                                description: Represents a monetary amount in the specified currency
+                                example:
+                                  currency: USD
+                                  value: 50000
+                              description: The amount this payment is being made for.
+                            ownerEntityType:
+                              type: string
+                              description: Identifies information about the caller making the payment.
+                              enum:
+                              - UNKNOWN_ENTITY_TYPE
+                              - PAYMENT_AGREEMENT
+                              - SETTLEMENT_TRANSACTION
+                              default: UNKNOWN_ENTITY_TYPE
+                              example: PAYMENT_AGREEMENT
+                            scopeID:
+                              allOf:
+                              - type: string
+                                format: uuid
+                                description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                                example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                                externalDocs:
+                                  description: RFC4122
+                                  url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                              description: A unique scope identifier that should cor relate to scopeType. For example, a buyer id or merchant id.
+                            scopeType:
+                              type: string
+                              enum:
+                              - UNKNOWN_SCOPE_TYPE
+                              - BUYER
+                              - MERCHANT
+                              - PROGRAM_AGREEMENT
+                              - PARTNER
+                              default: UNKNOWN_SCOPE_TYPE
+                              description: Identifies the owner of the payment method.
+                              example: BUYER
+                            sourceType:
+                              type: string
+                              description: Identifies how the payment was originated.
+                              enum:
+                              - UNKNOWN_SOURCE_TYPE
+                              - AUTOPAY
+                              - SCHEDULED
+                              - COLLECTIONS
+                              - ONETIME
+                              - OCC
+                              - REFUND
+                              - DOWN_PAYMENT
+                              - CHECK_PAYMENT
+                              - MANUAL_PAYMENT
+                              - EXTERNAL_COLLECTION
+                              - SPLITPAY_FIRST_PAYMENT
+                              - TRADE_IN_CREDIT
+                              default: UNKNOWN_SOURCE_TYPE
+                              example: ONETIME
+                            subSourceType:
+                              type: string
+                              description: Identifies additional source type information.
+                              enum:
+                              - UNKNOWN_SUB_SOURCE_TYPE
+                              - WEB
+                              - TEL
+                              - IVR
+                              default: UNKNOWN_SUB_SOURCE_TYPE
+                              example: WEB
+                            status:
+                              type: string
+                              description: 'Identifies the processing status of a payment. Note: `FAILED` is deprecated in favor of RETURNED'
+                              enum:
+                              - UNKNOWN_STATUS
+                              - PENDING
+                              - RECEIVED
+                              - FAILED
+                              - RETURNED
+                              - REJECTED
+                              - CANCELLED
+                              default: UNKNOWN_STATUS
+                              example: RECEIVED
+                            subStatus:
+                              type: string
+                              description: Identifies additional payment status information.
+                              enum:
+                              - UNKNOWN_SUB_STATUS
+                              - NONE
+                              - RETRY
+                              default: UNKNOWN_SUB_STATUS
+                              example: RETRY
+                            transactionType:
+                              type: string
+                              description: Identifies whether the payment was a credit or a debit.
+                              enum:
+                              - UNKNOWN_TRANSACTION_TYPE
+                              - DEBIT
+                              - CREDIT
+                              default: UNKNOWN_TRANSACTION_TYPE
+                              example: DEBIT
+                            deletedAt:
+                              allOf:
+                              - type: string
+                                format: date-time
+                                description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                                example: '2020-12-31T15:10:55Z'
+                                externalDocs:
+                                  description: RFC3339
+                                  url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                              description: The timestamp of when the payment was deleted.
+                            isCancellable:
+                              type: boolean
+                              description: A flag indicating if a payment is cancellable
+                              example: true
+                            transactionID:
+                              type: string
+                              description: third party transaction id
+                            reconID:
+                              type: string
+                              description: third party reconciliation id
+                            createdAt:
+                              allOf:
+                              - type: string
+                                format: date-time
+                                description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                                example: '2020-12-31T15:10:55Z'
+                                externalDocs:
+                                  description: RFC3339
+                                  url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                              description: The timestamp of when the refund was created.
+                      paperCheckDetails:
+                        type: object
+                        properties:
+                          id:
+                            allOf:
+                            - type: string
+                              format: uuid
+                              description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                              example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                              externalDocs:
+                                description: RFC4122
+                                url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                            description: refund id
+                          checkStatus:
+                            type: string
+                            description: internal check status
+                          externalCheckStatus:
+                            type: string
+                            description: external check status from provider
+                          externalTrackingNumber:
+                            type: string
+                            description: external tracking number from provider
+                          checkNumber:
+                            type: string
+                            description: external check number from provider
+                          externalCheckStatusDate:
+                            allOf:
+                            - type: string
+                              format: date-time
+                              description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                              example: '2020-12-31T15:10:55Z'
+                              externalDocs:
+                                description: RFC3339
+                                url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                            description: The timestamp for when external check status changed.
+                          checkIssuedDate:
+                            allOf:
+                            - type: string
+                              format: date-time
+                              description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                              example: '2020-12-31T15:10:55Z'
+                              externalDocs:
+                                description: RFC3339
+                                url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                            description: The timestamp for when check is issued.
+                          checkClosedDate:
+                            allOf:
+                            - type: string
+                              format: date-time
+                              description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                              example: '2020-12-31T15:10:55Z'
+                              externalDocs:
+                                description: RFC3339
+                                url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                            description: The timestamp for when check is closed.
+                          checkMailDate:
+                            allOf:
+                            - type: string
+                              format: date-time
+                              description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                              example: '2020-12-31T15:10:55Z'
+                              externalDocs:
+                                description: RFC3339
+                                url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                            description: The timestamp for when check is mailed.
+                          createdAt:
+                            allOf:
+                            - type: string
+                              format: date-time
+                              description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                              example: '2020-12-31T15:10:55Z'
+                              externalDocs:
+                                description: RFC3339
+                                url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                            description: The timestamp for when paper check is created.
+                          updatedAt:
+                            allOf:
+                            - type: string
+                              format: date-time
+                              description: The timestamp value formatted per RFC3339. This does not allow nulls.
+                              example: '2020-12-31T15:10:55Z'
+                              externalDocs:
+                                description: RFC3339
+                                url: https://datatracker.ietf.org/doc/html/rfc3339#section-5.6
+                            description: The timestamp for when paper check is updated.
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+      parameters:
+      - description: API version
+        in: header
+        name: X-API-VERSION
+        required: true
+        schema:
+          type: string
+        example: v2
+      requestBody:
+        description: Request body for reversing a payment
+        content:
+          application/json:
+            schema:
+              description: A request to reverse a payment.
+              required:
+              - referenceID
+              - scopeID
+              - scopeType
+              properties:
+                referenceID:
+                  allOf:
+                  - type: string
+                    format: uuid
+                    description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                    example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                    externalDocs:
+                      description: RFC4122
+                      url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                  description: A unique payment reference identifier.
+                scopeID:
+                  allOf:
+                  - type: string
+                    format: uuid
+                    description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+                    example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+                    externalDocs:
+                      description: RFC4122
+                      url: https://datatracker.ietf.org/doc/html/rfc4122.html
+                  description: A unique scope identifier that should correlate to scopeType. For example, a buyer id or merchant id.
+                scopeType:
+                  type: string
+                  enum:
+                  - UNKNOWN_SCOPE_TYPE
+                  - BUYER
+                  - MERCHANT
+                  - PROGRAM_AGREEMENT
+                  - PARTNER
+                  default: UNKNOWN_SCOPE_TYPE
+                  description: Identifies the owner of the payment method.
+                  example: BUYER
+      tags:
+      - Payments
+      security:
+      - bearerAuthPayments:
+        - u:payment.tool
+  /api/payments/cybersource:
+    get:
+      summary: Search Payment in Cybersource
+      description: Searches for a payment in Cybersource using either paymentID or transactionID.
+      operationId: searchCybersource
+      responses:
+        '200':
+          description: A successful response returns a cybersource search result.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: A JSON string for a search cybersource request.
+                properties:
+                  searchResult:
+                    type: string
+        '401':
+          description: Unauthorized. Indicates that provided credentials is not valid
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Jwt is expired
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 401
+                domain: Auth
+                message: Invalid authentication
+                reason: Invalid_Authentication
+        '403':
+          description: Forbidden. Indicates that request cannot be authorized
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'RBAC: Access Denied'
+            application/json:
+              schema:
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                required:
+                - code
+                - domain
+                - message
+                - reason
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: A reason code specific to the service and can be used to identify the exact issue. Should be unique within a domain
+                    example: Reason_Code
+              example:
+                code: 403
+                domain: Auth
+                message: 'RBAC: Access Denied'
+                reason: Access_Denied
+        '500':
+          description: Payments encountered an error while processing your request.
+          content:
+            application/json:
+              schema:
+                required:
+                - code
+                - domain
+                - message
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: The underlying http status code
+                    format: int32
+                    example: 500
+                  message:
+                    type: string
+                    description: A simple message in english describing the error and can be returned to the consumer
+                    example: Age cannot be less than 18
+                  domain:
+                    type: string
+                    description: The domain where the error is originating from as defined by the service
+                    example: Payments
+                  metadata:
+                    type: object
+                    additionalProperties:
+                      type: string
+                    description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                    example:
+                      propertyName: propertyName is required
+      parameters:
+      - name: paymentID
+        in: query
+        required: false
+        description: A unique payment identifier.
+        schema:
+          type: string
+          format: uuid
+          description: A universally unique identifier (Version 4) as defined in RFC4122. This does not allow nulls.
+          example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+          externalDocs:
+            description: RFC4122
+            url: https://datatracker.ietf.org/doc/html/rfc4122.html
+      - name: transactionID
+        in: query
+        required: false
+        description: A unique transaction identifier.
+        schema:
+          type: string
+      - name: reconciliationID
+        in: query
+        required: false
+        description: A unique third party provider identifier.
+        schema:
+          type: string
+      - name: merchantAccount
+        in: query
+        required: true
+        description: The merchant account to search for.
+        schema:
+          type: string
+      - description: API version
+        in: header
+        name: X-API-VERSION
+        required: true
+        schema:
+          type: string
+        example: v2
+      tags:
+      - Payments
+      security:
+      - bearerAuthPayments:
+        - r:payment

@@ -1,0 +1,175 @@
+openapi: 3.2.0
+info:
+  title: Servicing Financing Payment Plan API
+  description: Servicing supports a buyer's post purchase journey, enabling viewing and management of payment agreements across all payment products.
+  version: 2.0.0
+  contact:
+    email: partnership-growth@getbread.com
+servers:
+- url: https://api-preview.platform.breadpayments.com/
+  description: Preview environment
+- url: https://api.platform.breadpayments.com/
+  description: Production environment
+tags:
+- name: Financing Payment Plan
+paths:
+  /api/experience/dynamic-financing/payment-plan:
+    get:
+      operationId: getFinancingPaymentPlan
+      tags:
+      - Financing Payment Plan
+      summary: Get Financing Payment Plan
+      description: Retrieve payment plan copy for financing page
+      security: []
+      parameters:
+      - name: merchantId
+        in: query
+        description: ID of the merchant associated with the program.
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+      - name: programId
+        in: query
+        description: Financing program used to perform as low as calculations.
+        required: false
+        schema:
+          type: string
+          format: uuid
+        example: dc0dc633-1760-4d43-ba1d-da94ed701f06
+      responses:
+        '200':
+          description: Payment plan copy.
+          content:
+            application/json:
+              schema:
+                description: Payment product headline and subhead text used on financing page.
+                type: object
+                properties:
+                  headline:
+                    description: Payment product headline text
+                    type: string
+                    format: string
+                    example: Affordable monthly plans
+                  headlineDisclosureSymbol:
+                    description: Disclosure symbol for headline
+                    type: string
+                    format: string
+                    example: '*'
+                  subhead:
+                    description: Payment product subhead text
+                    type: string
+                    format: string
+                    example: Pay for you purchase over time with simple monthly installments that match your budget.
+                  subheadDisclosureSymbol:
+                    description: Disclosure symbol for subhead
+                    type: string
+                    format: string
+                    example: '*'
+        '400':
+          description: Response for Bad Request Errors by as_low_as service.
+          content:
+            application/json:
+              schema:
+                description: Represents a error returned by as_low_as service.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: As Low As error reason codes
+                    enum:
+                    - Bad_Request
+                    example: Bad_Request
+                example:
+                  message: Bad Request
+                  reason: Bad_Request
+                  domain: ''
+                  metadata: {}
+                  code: 400
+        '500':
+          description: Response for Internal Server Errors returned by as_low_as service.
+          content:
+            application/json:
+              schema:
+                description: As-low-as.
+                type: object
+                allOf:
+                - required:
+                  - code
+                  - domain
+                  - message
+                  type: object
+                  properties:
+                    code:
+                      type: integer
+                      description: The underlying http status code
+                      format: int32
+                      example: 500
+                    message:
+                      type: string
+                      description: A simple message in english describing the error and can be returned to the consumer
+                      example: Age cannot be less than 18
+                    domain:
+                      type: string
+                      description: The domain where the error is originating from as defined by the service
+                      example: Payments
+                    metadata:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Any additional details to be conveyed as determined by the service. If present, will return map of key value pairs
+                      example:
+                        propertyName: propertyName is required
+                properties:
+                  reason:
+                    type: string
+                    description: As Low As error reason codes
+                    enum:
+                    - Internal_Server_Error
+                    - Dependency_Unavailable
+                    example: Internal_Server_Error
+                example:
+                  message: Internal Server Error
+                  reason: Internal_Server_Error
+                  domain: ''
+                  metadata: {}
+                  code: 500
+components:
+  securitySchemes:
+    bearerAuthServicing:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    bearerAuthDisclosure:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT access token provided by the Auth service

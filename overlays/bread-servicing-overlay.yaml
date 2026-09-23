@@ -1,0 +1,36 @@
+overlay: 1.0.0
+info:
+  title: "API Evangelist enrichment overlay \u2014 Bread Servicing"
+  version: 1.0.0
+extends: openapi/bread-servicing-openapi.json
+x-generated: '2026-09-04'
+x-method: generated
+x-source: https://docs.breadpayments.com/oas/v2/2.0/servicing.openapi3.json (verbatim upstream, unmodified
+  in openapi/)
+actions:
+- target: $.info
+  description: Record where this document came from and who catalogued it, without touching the upstream
+    contract.
+  update:
+    x-provider: Bread Financial
+    x-provider-id: bread
+    x-product: BreadPay Platform
+    x-source-url: https://docs.breadpayments.com/oas/v2/2.0/servicing.openapi3.json
+    x-harvested: '2026-09-04'
+    x-catalog: https://apis.io/providers/bread/
+- target: $
+  description: Attach the cross-cutting runtime semantics this contract does not state inline.
+  update:
+    x-conventions: conventions/bread-conventions.yml
+    x-error-catalog: errors/bread-problem-types.yml
+    x-lifecycle: lifecycle/bread-lifecycle.yml
+    x-authentication: authentication/bread-authentication.yml
+    x-idempotency-coverage: partial
+    x-reversibility-grade: documented
+    x-rate-limit-headers: none published
+- target: $.servers
+  description: Name the two published environments explicitly.
+  update:
+    x-environments:
+      preview: https://api-preview.platform.breadpayments.com/
+      production: https://api.platform.breadpayments.com/

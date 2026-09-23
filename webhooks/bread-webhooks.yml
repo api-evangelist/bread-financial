@@ -1,0 +1,111 @@
+generated: '2026-09-04'
+method: searched
+source: >-
+  https://platform-docs.breadpayments.com/bread-developers/docs/webhook-concepts and openapi/bread-webhook-openapi.json
+  (https://docs.breadpayments.com/oas/v2/2.0/webhook.openapi3.json)
+provider: Bread Financial
+providerId: bread
+description: >-
+  BreadPay Platform event surface. Bread ships a self-service webhook subscription API and delivers
+  events in CloudEvents 1.0.2 format over the HTTP protocol binding, signed with a detached JWS. No
+  AsyncAPI document is published — this catalogue is the machine-readable stand-in.
+
+asyncapi_published: false
+
+delivery:
+  format: CloudEvents 1.0.2 (HTTP protocol binding)
+  spec: https://github.com/cloudevents/spec/blob/v1.0.2/cloudevents/bindings/http-protocol-binding.md
+  transport: HTTP POST to the subscriber URL
+  user_agent: BreadPay-Webhooks/2.0
+  headers:
+    - name: ce-id
+      meaning: Unique UUID for the event that triggered this delivery
+    - name: ce-source
+      meaning: Name of the domain that generated the webhook (e.g. breadpayments.webhooks.webhook)
+    - name: ce-type
+      meaning: The webhook's event type
+    - name: ce-specversion
+      meaning: CloudEvents spec version ('1.0')
+    - name: ce-time
+      meaning: Time the event was created
+    - name: timestamp
+      meaning: Time of sending to the subscriber endpoint (not the original event time)
+    - name: X-Jws-Signature
+      meaning: Detached JWS over the payload, with a `kid` matching a key from GET /api/webhook/client/jwks
+  routing_note: Use ce-source together with ce-type to distinguish event types.
+
+verification:
+  mechanism: JWS (JOSE) detached signature
+  key_discovery:
+    operationId: getClientJWKs
+    path: GET /api/webhook/client/jwks
+  crit_headers: [Timestamp]
+
+subscriptions:
+  self_service: true
+  api: openapi/bread-webhook-openapi.json
+  operations:
+    - operationId: getAllSubscriptions
+      path: GET /api/webhook/subscription
+    - operationId: createSubscription
+      path: POST /api/webhook/subscription
+    - operationId: getSubscription
+      path: GET /api/webhook/subscription/{name}
+    - operationId: updateSubscription
+      path: PATCH /api/webhook/subscription/{name}
+    - operationId: deleteSubscription
+      path: DELETE /api/webhook/subscription/{name}
+    - operationId: getEventBySubscriptionAndStatus
+      path: GET /api/webhook/subscription/{name}/event
+    - operationId: createSubscriptionTest
+      path: POST /api/webhook/subscription/{name}/integration-test-event
+    - operationId: replayEventBySubscriptionNameAndEventID
+      path: POST /api/webhook/subscription/{name}/event/{id}/dispatch
+    - operationId: getClientJWKs
+      path: GET /api/webhook/client/jwks
+  subscriber_auth_modes:
+    - NONE
+    - BASIC
+    - STATIC_BEARER_TOKEN
+  event_selection: >-
+    eventSubscriptions[] takes either exact event names or a wildcard over a namespace; the published
+    example is `breadpayments.webhooks.my.super-rev1`.
+  replay: >-
+    Failed deliveries can be listed by status (SUCCESS | FAILURE | PENDING) and individually replayed
+    by event id — a genuine redelivery surface, not just a log.
+  integration_test_event: >-
+    createSubscriptionTest fires a synthetic `integration_test_event` at the subscriber so an
+    integration can be verified end to end without producing real financial activity.
+
+event_catalog:
+  published: partial
+  note: >-
+    Bread lists available webhooks per domain under a "Webhooks" section of each API reference and
+    gives each a JSON schema, but at the time of this probe those sections
+    (buyer-management-webhooks, checkout-webhooks, webhook-1-webhooks) render EMPTY, and no event-type
+    enumeration appears anywhere in the nine published OpenAPI definitions. The subscription payload
+    is therefore free-text: a consumer can build the plumbing from this contract but cannot discover
+    the event names without asking Bread. That is the single largest documentation gap in an
+    otherwise well-specified platform.
+  common_payload:
+    identity: Every webhook JSON schema carries an `Identity` object containing at least a tenantID.
+
+browser_events:
+  note: >-
+    Distinct from webhooks — the client-side SDK emits DOM-level events consumed via
+    BreadPayments.on(). Documented at https://platform-docs.breadpayments.com/bread-onboarding/docs/events.
+  examples:
+    - INSTALLMENT:APPLICATION_DECISIONED
+    - INSTALLMENT:APPLICATION_CHECKOUT
+    - CARD:SUBMIT_APPLICATION
+    - CARD:RECEIVE_APPLICATION_RESULT
+    - CARD:RECEIVE_PREQUAL_APPLICATION_RESULT
+    - CARD:RECEIVE_PRESCREEN_APPLICATION_RESULT
+    - CARD:UNIFIED_OFFERS_RECEIVED
+    - CARD:ADD_TO_WALLET
+    - CARD:APPLICATION_COMPLETED
+    - CARD:CANCEL_APPLICATION
+    - CARD:TIMEOUT_APPLICATION
+maintainers:
+  - FN: Kin Lane
+    email: info@apievangelist.com
