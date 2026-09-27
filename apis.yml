@@ -105,27 +105,14 @@ apis:
   properties:
   - url: https://developers.breadfinancial.com/
     type: Documentation
+  - url: https://platform-docs.breadpayments.com/bread-onboarding
+    type: Documentation
   description: >-
     SplitPay is a short-term financing alternative for retail merchants, enabling customers to split purchases
     into manageable payments and helping retailers attract price-sensitive customers while increasing
     average transaction values.
-- aid: bread-financial:split-pay-api
-  name: Bread SplitPay
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bread.png
-  tags:
-  - Short-Term Financing
-  - Split Payments
-  - Retail
-  humanURL: https://platform-docs.breadpayments.com/bread-onboarding/docs/integration-testing
   baseURL: https://api.platform.breadpayments.com
-  properties:
-  - url: https://platform-docs.breadpayments.com/bread-onboarding
-    type: Documentation
-  description: >-
-    SplitPay is Bread's short-term, card-funded split-payment product for retail merchants. It is delivered
-    through the same BreadPay Platform contracts and the same hosted SDK as installment financing rather
-    than through a separate API surface — Bread publishes SplitPay-specific integration and test guidance
-    (test card 4000000000000002) but no SplitPay-only OpenAPI.
 - aid: bread-financial:bread-financial-application-api
   name: Bread Financial Application API
   description: The Application API from Bread Financial — 5 operation(s) for application.
